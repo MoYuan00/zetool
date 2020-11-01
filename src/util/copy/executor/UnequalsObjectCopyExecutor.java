@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import util.annotation.CopyFrom;
-import util.reflex.AnnotationUtil;
 import util.reflex.FieldUtil;
+import util.reflex.anntation.AnnotationUtil;
 
 /**
  * 不同类之间的拷贝执行者

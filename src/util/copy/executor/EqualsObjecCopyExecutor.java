@@ -65,7 +65,7 @@ public class EqualsObjecCopyExecutor {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T>T copyForm(T sourceObj) throws InstantiationException, IllegalAccessException{
-		if(sourceObj == null) throw new NullPointerException();
+		if(sourceObj == null) throw new NullPointerException("sourceObj is null");
 		T targetObj = (T) sourceObj.getClass().newInstance();
 		FieldUtil.getFieldsAsStream(sourceObj).forEach(sourceField->{
 			Field targetField = null;
