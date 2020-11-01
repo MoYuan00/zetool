@@ -1,3 +1,8 @@
+**/.idea
+**/target/
+!**/src/main/**
+!**/src/test/**
+
 # eclipse work files
 /.settings
 /bin
@@ -5,4 +10,3 @@
 .classpath
 .factorypath
 .project
-*.class
