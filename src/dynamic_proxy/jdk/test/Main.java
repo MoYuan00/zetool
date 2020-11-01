@@ -1,11 +1,11 @@
-package util.dynamic_proxy.jdk.test;
+package dynamic_proxy.jdk.test;
 
 import java.lang.reflect.InvocationTargetException;
 
-import util.dynamic_proxy.ProxyBuilder;
-import util.dynamic_proxy.jdk.HelloClass;
-import util.dynamic_proxy.jdk.HelloInterface;
-import util.dynamic_proxy.jdk.intercepter.HelloClassInterceptor;
+import dynamic_proxy.ProxyBuilder;
+import dynamic_proxy.jdk.HelloClass;
+import dynamic_proxy.jdk.HelloInterface;
+import dynamic_proxy.jdk.intercepter.HelloClassInterceptor;
 
 public class Main {
 	public static void main(String[] args)  {

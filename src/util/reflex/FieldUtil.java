@@ -9,6 +9,28 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FieldUtil {
+	/**
+	 * 将sourceObj对象个sourceField字段值， 拷贝给targetObj对象的targetField字段
+	 * @param sourceObj 源对象
+	 * @param sourceField 源字段
+	 * @param targetObj 目标对象
+	 * @param targetField 目标字段
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
+	public static void copy(Object sourceObj, Field sourceField, 
+			Object targetObj, Field targetField) throws IllegalArgumentException, IllegalAccessException {
+		assert sourceObj != null && sourceField != null && targetObj != null && targetField != null;
+		sourceField.setAccessible(true);				// 设置为可以访问
+		targetField.setAccessible(true);
+		// 这里只是获取了值，并没有真正的拷贝一份（可能需要递归克隆拷贝）
+		Object fieldVal = sourceField.get(sourceObj);	// 获取指定sourceObj对象的sourceField字段的值
+		targetField.set(targetObj, fieldVal);			// 设置targetField对象值
+	}
+	/**
+	 * 显示一个对象的所有字段值
+	 * @param obj
+	 */
 	public static void showFieldsValue(Object obj) {
 		if(obj == null) throw new NullPointerException();
 		System.out.print(obj.getClass() + ":{");

@@ -9,6 +9,6 @@ public class AClass {
 	private int d = 3333;
 	
 	public BClass copyToB() throws InstantiationException, IllegalAccessException {
-		return CopyUtils.copyForm(this, BClass.class);
+		return CopyUtils.copy(this, BClass.class);
 	}
 }

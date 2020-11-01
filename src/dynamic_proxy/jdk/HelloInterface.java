@@ -1,4 +1,4 @@
-package util.dynamic_proxy.jdk;
+package dynamic_proxy.jdk;
 
 /**
  * 原对象实现的接口

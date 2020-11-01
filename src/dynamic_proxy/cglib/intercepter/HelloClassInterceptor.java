@@ -1,4 +1,4 @@
-package util.dynamic_proxy.cglib.intercepter;
+package dynamic_proxy.cglib.intercepter;
 
 import java.lang.reflect.Method;
 

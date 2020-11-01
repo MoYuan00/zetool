@@ -1,14 +1,12 @@
-package util.dynamic_proxy.jdk;
+package dynamic_proxy.cglib;
 
 /**
  * 原对象
- * 继承要代理的接口
  * @author Rnti
  *
  */
-public class HelloClass implements HelloInterface{
+public class HelloClass{
 	int a;
-	@Override
 	public void hello() {
 		System.out.println("hello" + this);
 	}

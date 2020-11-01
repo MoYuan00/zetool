@@ -1,8 +1,8 @@
-package util.dynamic_proxy.cglib.test;
+package dynamic_proxy.cglib.test;
 
 
-import util.dynamic_proxy.cglib.HelloClass;
-import util.dynamic_proxy.cglib.intercepter.HelloClassInterceptor;
+import dynamic_proxy.cglib.HelloClass;
+import dynamic_proxy.cglib.intercepter.HelloClassInterceptor;
 
 public class Main {
 	public static void main(String[] args) {

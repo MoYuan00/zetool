@@ -1,4 +1,4 @@
-package util.dynamic_proxy.jdk.intercepter;
+package dynamic_proxy.jdk.intercepter;
 
 
 import java.lang.reflect.InvocationHandler;
