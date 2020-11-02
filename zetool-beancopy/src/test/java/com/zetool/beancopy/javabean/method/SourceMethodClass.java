@@ -1,6 +1,6 @@
-package util.test.javabean.method;
+package com.zetool.beancopy.javabean.method;
 
-import util.annotation.method.CopyTo;
+import com.zetool.beancopy.annotation.CopyTo;
 
 public class SourceMethodClass {
 	private String name = "SourceMethodClass name";

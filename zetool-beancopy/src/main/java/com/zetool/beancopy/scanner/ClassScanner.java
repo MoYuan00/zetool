@@ -1,10 +1,15 @@
-package util.reflex.clazz;
+package com.zetool.beancopy.scanner;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import util.copy.CopyUtils;
+import com.zetool.beancopy.proxy.ProxyBuilder;
 
+/**
+ * java类文件扫描器
+ * @author Rnti
+ *
+ */
 public class ClassScanner {
 	/**
 	 * 通过类名扫描该类所在包以及 包下的所有子包的class
@@ -19,7 +24,7 @@ public class ClassScanner {
 		return PackageClassScanner.packageScanner(packageName);// 获取当前包下以及子包下所以的类
 	}
 	public static void main(String[] args) throws FileNotFoundException, ClassNotFoundException {
-		System.out.println(ClassScanner.scanClassPackage(CopyUtils.class).size());
-		System.out.println(PackageClassScanner.packageScanner(CopyUtils.class.getPackage().getName()).size());
+		System.out.println(ClassScanner.scanClassPackage(ProxyBuilder.class).size());
+		System.out.println(PackageClassScanner.packageScanner(ProxyBuilder.class.getPackage().getName()).size());
 	}
 }

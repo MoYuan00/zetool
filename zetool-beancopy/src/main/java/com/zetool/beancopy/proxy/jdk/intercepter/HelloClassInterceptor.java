@@ -1,4 +1,4 @@
-package dynamic_proxy.jdk.intercepter;
+package com.zetool.beancopy.proxy.jdk.intercepter;
 
 
 import java.lang.reflect.InvocationHandler;

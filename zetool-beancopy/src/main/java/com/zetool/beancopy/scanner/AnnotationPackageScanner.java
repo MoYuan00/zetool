@@ -1,4 +1,4 @@
-package util.reflex.anntation;
+package com.zetool.beancopy.scanner;
 
 public class AnnotationPackageScanner {
 	

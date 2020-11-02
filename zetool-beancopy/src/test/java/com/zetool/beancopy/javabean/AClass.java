@@ -1,6 +1,6 @@
-package util.test.javabean;
+package com.zetool.beancopy.javabean;
 
-import util.copy.CopyUtils;
+import com.zetool.beancopy.executor.CopyExecutorAdapter;
 
 public class AClass {
 	private String a = "a";
@@ -9,6 +9,6 @@ public class AClass {
 	private int d = 3333;
 	
 	public BClass copyToB() throws InstantiationException, IllegalAccessException {
-		return CopyUtils.copy(this, BClass.class);
+		return CopyExecutorAdapter.copy(this, BClass.class);
 	}
 }

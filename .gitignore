@@ -3,8 +3,11 @@
 !**/src/main/**
 !**/src/test/**
 
+# idea work files
+*.iml
+
 # eclipse work files
-/.settings
+**/.settings/
 /bin
 
 .classpath
@@ -13,3 +16,4 @@
 
 # .jar
 *.jar
+

@@ -1,4 +1,4 @@
-package dynamic_proxy.jdk;
+package com.zetool.beancopy.proxy.jdk;
 
 /**
  * 原对象

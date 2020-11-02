@@ -1,12 +1,13 @@
-package util.copy.executor;
+package com.zetool.beancopy.executor;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
-import util.annotation.CopyFrom;
-import util.reflex.FieldUtil;
-import util.reflex.anntation.AnnotationUtil;
+import com.zetool.beancopy.annotation.CopyFrom;
+import com.zetool.beancopy.util.AnnotationUtil;
+import com.zetool.beancopy.util.FieldUtil;
+
 
 /**
  * 不同类之间的拷贝执行者

@@ -1,4 +1,4 @@
-package util.test.javabean.method;
+package com.zetool.beancopy.javabean.method;
 
 
 public class TargetMethodClass {

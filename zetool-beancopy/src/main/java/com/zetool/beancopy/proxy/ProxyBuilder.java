@@ -1,4 +1,4 @@
-package dynamic_proxy;
+package com.zetool.beancopy.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;

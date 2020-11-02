@@ -1,15 +1,15 @@
-package util.reflex.anntation;
+package com.zetool.beancopy.util;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import util.annotation.CopyFrom;
-import util.annotation.method.CopyTo;
+import com.zetool.beancopy.annotation.CopyFrom;
+import com.zetool.beancopy.annotation.CopyTo;
+
 
 public class AnnotationUtil {
 	/**

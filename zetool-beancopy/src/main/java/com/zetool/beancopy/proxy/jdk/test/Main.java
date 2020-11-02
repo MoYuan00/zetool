@@ -1,11 +1,12 @@
-package dynamic_proxy.jdk.test;
+package com.zetool.beancopy.proxy.jdk.test;
 
 import java.lang.reflect.InvocationTargetException;
 
-import dynamic_proxy.ProxyBuilder;
-import dynamic_proxy.jdk.HelloClass;
-import dynamic_proxy.jdk.HelloInterface;
-import dynamic_proxy.jdk.intercepter.HelloClassInterceptor;
+import com.zetool.beancopy.proxy.ProxyBuilder;
+import com.zetool.beancopy.proxy.jdk.HelloClass;
+import com.zetool.beancopy.proxy.jdk.HelloInterface;
+import com.zetool.beancopy.proxy.jdk.intercepter.HelloClassInterceptor;
+
 
 public class Main {
 	public static void main(String[] args)  {

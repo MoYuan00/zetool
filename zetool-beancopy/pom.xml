@@ -8,8 +8,31 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <packaging>jar</packaging>
+	
     <artifactId>zetool-beancopy</artifactId>
-
+	
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/cglib/cglib -->
+		<dependency>
+		    <groupId>cglib</groupId>
+		    <artifactId>cglib</artifactId>
+		    <version>2.2.2</version>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<defaultGoal>compile</defaultGoal>
+		<plugins>    
+        <plugin>    
+            <groupId>org.apache.maven.plugins</groupId>    
+            <artifactId>maven-compiler-plugin</artifactId>    
+            <configuration>    
+                <source>1.8</source>    
+                 <target>1.8</target>    
+             </configuration>    
+         </plugin>    
+     </plugins>    
+	</build>
 
 </project>

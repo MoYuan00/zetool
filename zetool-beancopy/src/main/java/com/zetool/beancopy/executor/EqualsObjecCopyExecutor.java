@@ -1,4 +1,4 @@
-package util.copy.executor;
+package com.zetool.beancopy.executor;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -8,24 +8,27 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
-import util.reflex.FieldUtil;
+import com.zetool.beancopy.util.FieldUtil;
+
 
 public class EqualsObjecCopyExecutor {
 	/**
 	 * 拷贝对象A和B同类型，并且实现了Serializable接口，就直接深度拷贝
 	 * @param <T>
-	 * @param a
+	 * @param <T>
+	 * @param sourceObj
 	 * @return 
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Serializable>T copyForm(T a){
-		if(a == null) throw new NullPointerException();
+	public static <T extends Serializable> T copyFromWithIO(T sourceObj){
+		System.out.println("<T extends Serializable> copyFrom");
+		if(sourceObj == null) throw new NullPointerException();
 		T bInstance = null;
 		ByteArrayOutputStream bAOS = new ByteArrayOutputStream(100);
 		ObjectOutputStream oOs = null;
 		try {
 			oOs = new ObjectOutputStream(bAOS);// 将对象写入字节缓存区
-			oOs.writeObject(a); // 写入对象
+			oOs.writeObject(sourceObj); // 写入对象
 			oOs.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -64,9 +67,10 @@ public class EqualsObjecCopyExecutor {
 	 * @throws InstantiationException 
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T>T copyForm(T sourceObj) throws InstantiationException, IllegalAccessException{
+	public static <T>T copyFrom(T sourceObj) throws InstantiationException, IllegalAccessException{
+		System.out.println("<T>T copyFrom");
 		if(sourceObj == null) throw new NullPointerException("sourceObj is null");
-		T targetObj = (T) sourceObj.getClass().newInstance();
+		Object targetObj = sourceObj.getClass().newInstance();
 		FieldUtil.getFieldsAsStream(sourceObj).forEach(sourceField->{
 			Field targetField = null;
 			try {
@@ -80,6 +84,7 @@ public class EqualsObjecCopyExecutor {
 				e.printStackTrace();
 			}
 		});
-		return targetObj;
+		return (T)targetObj;
 	}
+
 }

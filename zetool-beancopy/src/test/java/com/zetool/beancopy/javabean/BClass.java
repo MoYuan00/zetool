@@ -1,6 +1,6 @@
-package util.test.javabean;
+package com.zetool.beancopy.javabean;
 
-import util.annotation.CopyFrom;
+import com.zetool.beancopy.annotation.CopyFrom;
 
 @CopyFrom(
 		fromClass = AClass.class,

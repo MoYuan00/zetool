@@ -1,7 +1,6 @@
-package util.copy;
+package com.zetool.beancopy.executor;
 
-import util.copy.executor.EqualsObjecCopyExecutor;
-import util.copy.executor.UnequalsObjectCopyExecutor;
+import java.io.Serializable;
 
 /**
  * 拷贝对象工具类
@@ -9,7 +8,7 @@ import util.copy.executor.UnequalsObjectCopyExecutor;
  * @author Rnti
  *
  */
-public class CopyUtils {
+public class CopyExecutorAdapter {
 	/**
 	 * 将Tsource对象克隆给Ttarget
 	 * @param <Tsource>
@@ -35,6 +34,19 @@ public class CopyUtils {
 	 */
 	public static <T>T copy(T sourceObj) 
 			throws InstantiationException, IllegalAccessException{
-		return EqualsObjecCopyExecutor.copyForm(sourceObj);
+		return EqualsObjecCopyExecutor.copyFrom(sourceObj); 
+	}
+	
+	/**
+	 * 克隆一份T对象
+	 * @param <T>
+	 * @param sourceObj
+	 * @return
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	public static <T extends Serializable>T copy(T sourceObj) 
+			throws InstantiationException, IllegalAccessException{
+		return EqualsObjecCopyExecutor.copyFromWithIO(sourceObj);
 	}
 }

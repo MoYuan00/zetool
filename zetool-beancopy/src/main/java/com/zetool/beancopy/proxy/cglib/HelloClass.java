@@ -1,4 +1,4 @@
-package dynamic_proxy.cglib;
+package com.zetool.beancopy.proxy.cglib;
 
 /**
  * 原对象

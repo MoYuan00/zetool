@@ -1,22 +1,17 @@
-package util.test;
+package com.zetool.beancopy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import proxy.javabean.CClass2;
-import proxy.javabean.DClass2;
-import util.annotation.method.CopyTo;
-import util.copy.CopyUtils;
-import util.reflex.FieldUtil;
-import util.reflex.anntation.AnnotationUtil;
-import util.test.javabean.AClass;
-import util.test.javabean.BClass;
+import com.zetool.beancopy.annotation.CopyTo;
+import com.zetool.beancopy.util.AnnotationUtil;
 
-public class Main {
+
+public class App {
 	static class A{
 		int a = 0;
-		@CopyTo(sourceField = { "a" }, targetClass = Main.class)
+		@CopyTo(sourceField = { "a" }, targetClass = App.class)
 		public int show() {
 			return 0;
 		}

@@ -1,4 +1,4 @@
-package util.copy.array;
+package com.zetool.beancopy.util;
 
 import java.util.ArrayList;
 import java.util.Collection;

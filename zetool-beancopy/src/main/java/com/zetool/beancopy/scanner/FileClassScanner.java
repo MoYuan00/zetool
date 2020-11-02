@@ -1,4 +1,4 @@
-package util.reflex.clazz;
+package com.zetool.beancopy.scanner;
 
 import java.io.File;
 import java.io.FileNotFoundException;

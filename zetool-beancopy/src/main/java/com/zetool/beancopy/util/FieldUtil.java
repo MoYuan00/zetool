@@ -1,7 +1,9 @@
-package util.reflex;
+package com.zetool.beancopy.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,11 +22,14 @@ public class FieldUtil {
 	 */
 	public static void copy(Object sourceObj, Field sourceField, 
 			Object targetObj, Field targetField) throws IllegalArgumentException, IllegalAccessException {
-		assert sourceObj != null && sourceField != null && targetObj != null && targetField != null;
 		sourceField.setAccessible(true);				// 设置为可以访问
 		targetField.setAccessible(true);
+		if(Modifier.isFinal(sourceField.getModifiers())){// final 类型变量
+			return;
+		}
 		// 这里只是获取了值，并没有真正的拷贝一份（可能需要递归克隆拷贝）
 		Object fieldVal = sourceField.get(sourceObj);	// 获取指定sourceObj对象的sourceField字段的值
+		System.out.println("设置字段值：" + targetField.getName() + " set to" + fieldVal);
 		targetField.set(targetObj, fieldVal);			// 设置targetField对象值
 	}
 	/**

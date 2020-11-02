@@ -1,13 +1,12 @@
-package dynamic_proxy.cglib.test;
+package com.zetool.beancopy.proxy.cglib.test;
 
-
-import dynamic_proxy.cglib.HelloClass;
-import dynamic_proxy.cglib.intercepter.HelloClassInterceptor;
+import com.zetool.beancopy.proxy.cglib.HelloClass;
+import com.zetool.beancopy.proxy.cglib.intercepter.HelloClassInterceptor;
 
 public class Main {
 	public static void main(String[] args) {
         HelloClass cGsubject = 
-        		new HelloClassInterceptor<HelloClass>().createProxyInstance(new HelloClass());// Éú³É´úÀí
+        		new HelloClassInterceptor<HelloClass>().createProxyInstance(new HelloClass());// ï¿½ï¿½ï¿½É´ï¿½ï¿½ï¿½
         cGsubject.hello();
 	}
 }

@@ -1,10 +1,11 @@
-package dynamic_proxy.cglib.intercepter;
+package com.zetool.beancopy.proxy.cglib.intercepter;
 
 import java.lang.reflect.Method;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
+
 
 /**
  * 定义一个代理实现类
@@ -35,4 +36,5 @@ public class HelloClassInterceptor<T> implements MethodInterceptor {// 拦截器
         System.out.println("end time -----> "+ System.currentTimeMillis());
         return returnObj;
     }
+
 }
