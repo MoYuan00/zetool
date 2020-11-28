@@ -18,7 +18,7 @@ public class PackageClassScanner {
 	 */
 	public static List<Class<?>> packageScanner(String packageName) throws ClassNotFoundException {
 		List<Class<?>> classList = new ArrayList<>();
-        String packageDirName = packageName.replace('.', '/');//获取包的名字 并进行替换
+        String packageDirName = packageName.replace('.', '/');	//获取包的名字 并进行替换
 		Enumeration<URL> dirs = null;
         try {
 			dirs = Thread.currentThread().getContextClassLoader().getResources(packageDirName);// 这里获取到了url
@@ -29,7 +29,7 @@ public class PackageClassScanner {
                     String filePath = URLDecoder.decode(url.getFile(), "UTF-8");//获取包的物理路径
                     scannerPackageByFile(packageName, filePath, classList); //以文件的方式扫描整个包下的文件 并添加到集合中
                 }else {
-                	System.err.println("protocol is " + protocol);
+                	throw new IllegalStateException("protocol is " + protocol);
                 }
 			}
 		} catch (IOException e) {

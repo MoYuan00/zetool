@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 import com.zetool.beancopy.proxy.ProxyBuilder;
+import com.zetool.beancopy.util.Log;
 
 /**
  * java类文件扫描器
@@ -20,7 +21,7 @@ public class ClassScanner {
 	 */
 	public static List<Class<?>> scanClassPackage(Class<?> clazz) throws FileNotFoundException, ClassNotFoundException{
 		String packageName = clazz.getPackage().getName();
-		System.out.println("当前包名:" + packageName);
+		Log.info(ClassScanner.class, "开始扫描：" + packageName);
 		return PackageClassScanner.packageScanner(packageName);// 获取当前包下以及子包下所以的类
 	}
 	public static void main(String[] args) throws FileNotFoundException, ClassNotFoundException {
