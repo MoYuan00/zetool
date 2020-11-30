@@ -14,6 +14,8 @@ import java.util.function.Function;
  *
  */
 public final class CollectionUtils {
+	
+	
 	/**
 	 * 将一个数组T[]转换成HashSet<R>. 
 	 * 如果T[] == null 返回空集合
@@ -27,6 +29,8 @@ public final class CollectionUtils {
 		for(T t : array) list.add(call.apply(t));
 		return list;
 	}
+	
+	
 	/**
 	 * 将一个数组T[]转换成HashSet<T>. 如果T[] == null 返回空集合
 	 * @param <T>
@@ -39,6 +43,8 @@ public final class CollectionUtils {
 		for(T t : array) list.add(t);
 		return list;
 	}
+	
+	
 	/**
 	 * 将一个数组Iterable<T> items转换成HashSet<R>. 如果Iterable<T> == null 返回空集合
 	 * @param <T, R>
@@ -51,6 +57,8 @@ public final class CollectionUtils {
 		for(T t : items) list.add(call.apply(t));
 		return list;
 	}
+	
+	
 	/**
 	 * 将一个数组Iterable<T> items转换成HashSet<T>. 如果Iterable<T> == null 返回空集合
 	 * @param <T>
@@ -63,6 +71,7 @@ public final class CollectionUtils {
 		for(T t : items) list.add(t);
 		return list;
 	}
+	
 	
 	/**
 	 * 将一个数组T[]转换成ArrayList<T>. 如果T[] == null 返回空集合
@@ -79,14 +88,17 @@ public final class CollectionUtils {
 	}
 	
 	/**
-	 * 将array[]添加到collection中
-	 * @param <T>
-	 * @param list
-	 * @param array
+	 * 将一个集合类型转换为字符串，方便输出调试
+	 * @param conObjects
+	 * @return
 	 */
-	public static <T>void addAll(Collection<T> collection, T array[]){
-		if(array == null) return;
-		for(T t : array)
-			collection.add(t);
+	public final static String toString(Collection<?> conObjects) {
+		StringBuilder sBuilder = new StringBuilder("[size:");
+		sBuilder.append(conObjects.size());
+		for(Object obj : conObjects) {
+			sBuilder.append(", ");
+			sBuilder.append(obj.toString());
+		}
+		return sBuilder.append(']').toString();
 	}
 }

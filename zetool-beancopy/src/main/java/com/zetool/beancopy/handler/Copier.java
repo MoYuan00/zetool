@@ -1,4 +1,4 @@
-package com.zetool.beancopy.executor;
+package com.zetool.beancopy.handler;
 
 import java.io.Serializable;
 
@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author Rnti
  *
  */
-public class CopyExecutorAdapter {
+public class Copier {
 	/**
 	 * 将Tsource对象克隆给Ttarget
 	 * @param <Tsource>

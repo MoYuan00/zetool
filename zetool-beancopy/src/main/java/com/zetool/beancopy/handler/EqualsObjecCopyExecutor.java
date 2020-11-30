@@ -1,4 +1,4 @@
-package com.zetool.beancopy.executor;
+package com.zetool.beancopy.handler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -6,12 +6,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Field;
+import java.util.Map;
 
-import com.zetool.beancopy.util.FieldUtil;
+import com.zetool.beancopy.checkor.FieldContext;
+import com.zetool.beancopy.checkor.FieldContextBuilder;
 
 
-public class EqualsObjecCopyExecutor {
+class EqualsObjecCopyExecutor {
 	/**
 	 * 拷贝对象A和B同类型，并且实现了Serializable接口，就直接深度拷贝
 	 * @param <T>
@@ -71,16 +72,13 @@ public class EqualsObjecCopyExecutor {
 		System.out.println("<T>T copyFrom");
 		if(sourceObj == null) throw new NullPointerException("sourceObj is null");
 		Object targetObj = sourceObj.getClass().newInstance();
-		FieldUtil.getFieldsAsStream(sourceObj).forEach(sourceField->{
-			Field targetField = null;
+		Map<String, FieldContext> targetMap = FieldContextBuilder.buildSimpleFieldContext(targetObj);
+		FieldContextBuilder.buildSimpleFieldContext(sourceObj.getClass()).forEach((name, sourceField) -> {
 			try {
-				targetField = targetObj.getClass().getDeclaredField(sourceField.getName());// 获取targetObj的字段
-			} catch (IllegalArgumentException | NoSuchFieldException | SecurityException e) {
-				e.printStackTrace();
-			}
-			try {
-				FieldUtil.copy(sourceObj, sourceField, targetObj, targetField);// 设置当前sourceObj对象的targetField
-			} catch (IllegalArgumentException | IllegalAccessException | SecurityException e) {
+				sourceField.setObject(sourceObj);
+				Object value = sourceField.cloneValue(); // 拷贝值
+				targetMap.get(name).setValue(value);
+			} catch (IllegalArgumentException | SecurityException e) {
 				e.printStackTrace();
 			}
 		});

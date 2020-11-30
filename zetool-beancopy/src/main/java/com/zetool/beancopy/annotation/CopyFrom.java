@@ -16,6 +16,17 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CopyFrom {
-	Class<?> fromClass();// 拷贝来源于哪里
-	String[] fields() default {};// 当前类有哪几个字段需要进行copy
+	
+	/**
+	 * 值：拷贝来源于哪里
+	 * @return
+	 */
+	Class<?> sourceClass();
+	
+	/**
+	 * 标注需要拷贝的字段
+	 * 值：当前类有哪些字段需要拷贝
+	 * @return
+	 */
+	String[] fields();
 }

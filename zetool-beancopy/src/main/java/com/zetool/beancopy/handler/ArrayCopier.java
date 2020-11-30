@@ -1,56 +1,10 @@
-package com.zetool.beancopy.executor;
+package com.zetool.beancopy.handler;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-/**
- * 拷贝基本类型
- * 和
- * 1.包装类型 Integer,String,Long,Double,Float,Short,Byte等
- * 2. 任意基本类型的数组，一维`BaseType[]`和多维。
- * 以上BaseType[]可以直接调用其`val = type.clone()`方法实现值拷贝。这种方法比较快速
- * @author Rnti
- *
- */
-public class BaseTypeCopyExecutor {
-	
-	/**
-	 * 拷贝基本类型，包装类型，以及其多维数组
-	 * @param obj
-	 * @return
-	 */
-	public static <T>T executor(T obj) {
-		System.out.print(obj.getClass().getTypeName() + ": ");
-		if(obj.getClass().isPrimitive()) {// 基本类型 int, long......
-			System.out.println("基本类型拷贝");
-			return obj;
-		}
-//		if(obj instanceof Object[]) {// 包装类型 BaseType[]和多维包装类型数组
-//			System.out.println("Object[] 类型");
-//			List<Object> objArray = new ArrayList<>();
-//			for(Object o : (Object[])obj) {
-//				objArray.add((Object)executor(o));
-//			}
-//			return (T) objArray.toArray();
-//		}
-		if(obj.getClass().isArray()) {// 基本类型的数组，， 这里和Object[] 类型位置不能颠倒
-//			System.out.println("Array 类型");
-//			Object cloneArr = Array.newInstance(obj.getClass().getComponentType(), Array.getLength(obj)); 
-//			cloneArr(obj)
-//			return (T)cloneArr;
-		}
-		if(obj instanceof Object) {// 必须放在最后 Integer, String, Double。。 这里直接返回也没事Integer包装类型只会拷贝值
-			System.out.println("Object 类型");
-			return obj;
-		}
-		return obj;
-	}
+final class ArrayCopier {
+
 	/** 
      * 多维数组深层克隆，如果数组类型是实现了Cloneable接口的某个类， 
      * 则会调用每个元素的clone方法实现深度克隆 
@@ -63,7 +17,7 @@ public class BaseTypeCopyExecutor {
      * @param cloneArr 
      * @throws Exception 
      */  
-    static private void cloneArr(Object objArr, Object cloneArr) throws Exception {  
+    public static void clone(Object objArr, Object cloneArr) throws Exception {  
         Object objTmp;  
         Object val = null;  
         for (int i = 0; i < Array.getLength(objArr); i++) {  
@@ -76,7 +30,7 @@ public class BaseTypeCopyExecutor {
                 val = Array.newInstance(objTmp.getClass().getComponentType(), Array  
                         .getLength(objTmp));  
                 //如果元素是数组，则递归调用  
-                cloneArr(objTmp, val);  
+                clone(objTmp, val);  
             } else {//否则非数组  
                 /* 
                  * 如果为基本类型或者是非Cloneable类型的引用类型，则直接对拷值 或 
@@ -121,48 +75,4 @@ public class BaseTypeCopyExecutor {
             Array.set(cloneArr, i, val);  
         }  
     }  
-	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
-		// 包装类型 OK
-		Integer a = 12;
-		Integer b = executor(a);
-		a = 11;
-		System.out.println(a + " " + b);
-		
-		String aa = "1";
-		String bb = executor(aa);
-		aa = "123";
-		System.out.println(aa + " " + bb);
-		
-		// 基本类型数组 OK
-		int ts [] = new int[] {1, 2};
-		int newTs[] = executor(ts);
-		ts[0] = 0;
-		System.out.println(Arrays.toString(newTs));
-		
-		// 一维包装类型数组 OK
-		Integer ts2 [] = new Integer[] {1, 2};
-		Integer newTs2[] = executor(ts2);
-		ts2[0] = 0;
-		System.out.println(Arrays.toString(newTs2));
-		
-		// 二维包装类型数组 OK
-		Integer ts3 [][] = new Integer[][] {{1, 2},{2, 90}};
-		Integer newTs3[][] = (Integer[][])executor(ts3);
-		ts3[0][0] = 0;
-		for(Integer[] i : newTs3) {
-			System.out.println(Arrays.toString(i));
-		}
-		
-		// 三维包装类型数组 OK
-		Integer ts4 [][][] = new Integer[][][] {{{1, 2},{2, 90}},{{1, 3},{3,5}}};
-		Integer newTs4[][][] = executor(ts4);
-		ts4[0][0][0] = 0;
-		for(Integer[][] i : newTs4) {
-			for(Integer[] j : i) {
-				System.out.println(Arrays.toString(j));
-			}
-		}
-		
-	}
-	
 }

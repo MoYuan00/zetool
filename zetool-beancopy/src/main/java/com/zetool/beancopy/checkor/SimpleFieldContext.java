@@ -1,6 +1,10 @@
 package com.zetool.beancopy.checkor;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * 封装 java 自带的Field类
@@ -8,43 +12,73 @@ import java.lang.reflect.Field;
  * @author Rnti
  *
  */
-public class FieldInfo implements Comparable<FieldInfo> {
+public class SimpleFieldContext implements FieldContext {
+	
 	private Field field;
+	private Object obj;
 	
-	public FieldInfo(Field field) {
+	public SimpleFieldContext(Field field) {
 		this.field = field;
+		field.setAccessible(true);
 	}
 	
-	public Field getField() {
-		return field;
+	public SimpleFieldContext(Field field, Object obj) {
+		this(field);
+		this.obj = obj;
 	}
 	
-	
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((field == null) ? 0 : field.hashCode());
-		return result;
+	public String getName() {
+		return field.getName();
 	}
+
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		FieldInfo other = (FieldInfo) obj;
-		if (field == null) {
-			if (other.field != null)
-				return false;
-		} else if (!field.equals(other.field)) // 通过名称比较
-			return false;
-		return true;
+	public Class<?> getType() {
+		return field.getType();
 	}
+
 	@Override
-	public int compareTo(FieldInfo o) {
-		return this.field.getName().compareTo(o.field.getName());
+	public Object getValue() {
+		if(obj == null) throw new IllegalArgumentException("object is null, can not get this value!");
+		try {
+			return field.get(obj);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+			throw new IllegalStateException();
+		}
+	}
+
+	@Override
+	public SimpleFieldContext setValue(Object value) {
+		try {
+			field.set(obj, value);
+			return this;
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+			throw new IllegalStateException();
+		}
+	}
+
+	@Override
+	public Object cloneValue() {
+		if(obj == null) throw new IllegalArgumentException("object is null, can not clone this value!");
+		TypeToken<?> typeToken = TypeToken.get(field.getType());
+		return new Gson().fromJson(new Gson().toJson(getValue()), typeToken.getType());
+	}
+
+	@Override
+	public boolean isFinal() {
+		return Modifier.isFinal(field.getModifiers());
+	}
+
+	@Override
+	public boolean isStatic() {
+		return Modifier.isStatic(field.getModifiers());
+	}
+
+	@Override
+	public SimpleFieldContext setObject(Object obj) {
+		this.obj = obj;
+		return this;
 	}
 }

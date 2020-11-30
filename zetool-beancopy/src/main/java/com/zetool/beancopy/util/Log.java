@@ -17,36 +17,38 @@ public final class Log {
 	private static final int LEVEL = ANY;
 	
 	private static final String[] LEVEL_STRING = {"any", "debug", "info", "worn", "error"};
-	private static String format(int level, Class<?> clazz, String msg) {
+	
+	private static String format(int level, Class<?> clazz, Object msg) {
 		return String.format("%-5s %s [%s] %s", 
 				LEVEL_STRING[level].toUpperCase(), 
 				new SimpleDateFormat("MM/dd hh:mm:ss").format(Calendar.getInstance().getTime()), clazz.getName(), msg);
 	}
-	public static void any(Class<?> clazz, String msg) {
+	
+	public static void any(Class<?> clazz, Object msg) {
 		if(LEVEL <= ANY)
 			System.out.println(format(ANY, clazz, msg));
 	}
 	
 	
-	public static void info(Class<?> clazz, String msg) {
+	public static void info(Class<?> clazz, Object msg) {
 		if(LEVEL <= INFO)
 			System.out.println(format(INFO, clazz, msg));
 	}
 	
 	
-	public static void debug(Class<?> clazz, String msg) {
+	public static void debug(Class<?> clazz, Object msg) {
 		if(LEVEL <= DEBUG)
 			System.out.println(format(DEBUG, clazz, msg));
 	}
 	
 	
-	public static void worn(Class<?> clazz, String msg) {
+	public static void worn(Class<?> clazz, Object msg) {
 		if(LEVEL <= WORN)
 			System.out.println(format(WORN, clazz, msg));
 	}
 	
 	
-	public static void error(Class<?> clazz, String msg) {
+	public static void error(Class<?> clazz, Object msg) {
 		if(LEVEL <= ERROR)
 			System.err.println(format(ERROR, clazz, msg));
 	}
