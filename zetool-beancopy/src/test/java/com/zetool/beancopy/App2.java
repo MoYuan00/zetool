@@ -9,10 +9,12 @@ import com.zetool.beancopy.javabean.A;
 import com.zetool.beancopy.javabean.B;
 import com.zetool.beancopy.javabean.C;
 import com.zetool.beancopy.util.Log;
+import com.zetool.beancopy.util.StdLog;
 
 public class App2 {
 	public static void main(String[] args) {
-		
+		Log.LEVEL = Log.WORN;
+		Log.logger = new StdLog();
 		simpleCopyTest();
 		
 //		checkTest();

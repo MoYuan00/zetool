@@ -69,7 +69,6 @@ class EqualsObjecCopyExecutor {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T>T copyFrom(T sourceObj) throws InstantiationException, IllegalAccessException{
-		System.out.println("<T>T copyFrom");
 		if(sourceObj == null) throw new NullPointerException("sourceObj is null");
 		Object targetObj = sourceObj.getClass().newInstance();
 		Map<String, FieldContext> targetMap = FieldContextBuilder.buildSimpleFieldContext(targetObj);
