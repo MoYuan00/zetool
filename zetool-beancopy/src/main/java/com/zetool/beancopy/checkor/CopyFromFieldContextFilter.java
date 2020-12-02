@@ -18,6 +18,11 @@ public class CopyFromFieldContextFilter implements FieldContextFilter {
 		if(copyFrom == null) throw new IllegalArgumentException();
 	}
 	
+	/**
+	 * 过滤出集合中的字段，这个字段包含在copyFrom注解的fields中
+	 * @param fieldContexts
+	 * @return
+	 */
 	@Override
 	public Collection<FieldContext> filter(Collection<FieldContext> fieldContexts) {
 		Set<String> fieldNameSet = CollectionUtils.toSet(copyFrom.fields());
@@ -27,6 +32,11 @@ public class CopyFromFieldContextFilter implements FieldContextFilter {
 		return result;
 	}
 	
+	/**
+	 * 过滤出集合中的字段，这个字段包含在copyFrom注解的fields中
+	 * @param fieldContexts
+	 * @return
+	 */
 	public Map<String, FieldContext> filter(Map<String, FieldContext> fieldContexts) {
 		Set<String> fieldNameSet = CollectionUtils.toSet(copyFrom.fields());
 		Map<String, FieldContext> result = new HashMap<String, FieldContext>();

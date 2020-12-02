@@ -26,7 +26,11 @@ public @interface CopyFrom {
 	/**
 	 * 标注需要拷贝的字段
 	 * 值：当前类有哪些字段需要拷贝
+	 * 默认拷贝全部属性。
 	 * @return
 	 */
-	String[] fields();
+	String[] fields() default {};
+	
+	
+
 }

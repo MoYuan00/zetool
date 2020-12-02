@@ -48,9 +48,8 @@ public class CopyFromAnnotationCheckor {
 		public boolean check() {
 			if(sourceClazz.classIsNull() || targetClazz.classIsNull() || copyFrom == null) throw new NullPointerException();
 			if(!checkTargetFields()) return false;
-			CopyFromFieldContextFilter filter = new CopyFromFieldContextFilter(copyFrom);
 			Map<String, FieldContext> sourceFieldMap = sourceClazz.getFieldContexts();
-			Map<String, FieldContext> targetFieldMap = filter.filter(targetClazz.getFieldContexts());
+			Map<String, FieldContext> targetFieldMap = targetClazz.getFieldContextsByCopyFrom(copyFrom);
 			Log.info(CopyPair.class, "检查source:" + sourceClazz.getClassName() + " <- target" + targetClazz.getClassName());
 			
 			List<FieldContextPair> fieldPairList = new ArrayList<>(); // 存放映射关系

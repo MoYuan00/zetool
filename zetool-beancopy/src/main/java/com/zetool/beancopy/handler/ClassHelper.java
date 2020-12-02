@@ -4,11 +4,15 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Map;
 
+import com.zetool.beancopy.annotation.CopyFrom;
+import com.zetool.beancopy.checkor.CopyFromFieldContextFilter;
 import com.zetool.beancopy.checkor.FieldContext;
 import com.zetool.beancopy.checkor.FieldContextBuilder;
+import com.zetool.beancopy.util.Log;
 
 /**
- * 
+ * 封装java自带的class类，提供映射方法
+ * 重写equals和hashCode方法，如果两个ClassHelper中的clazz字段的getTypeName()是相同的，那么两个类相同
  * @author loki02
  * @date 2020年12月1日
  */
@@ -30,10 +34,27 @@ public class ClassHelper {
 		return clazz == null;
 	}
 	
+	/**
+	 * 获取所有字段的集合
+	 * @return
+	 */
 	public Map<String, FieldContext> getFieldContexts() {
 		if(fieldContextMap == null)
 			fieldContextMap =  FieldContextBuilder.buildSimpleFieldContext(clazz);
 		return fieldContextMap;
+	}
+	
+	/**
+	 * 获取需要拷贝的字段的集合
+	 * @param copyFrom
+	 * @return
+	 */
+	public Map<String, FieldContext> getFieldContextsByCopyFrom(CopyFrom copyFrom) {
+		if(copyFrom.fields().length == 0) {// 默认拷贝所有属性
+			Log.info(ClassHelper.class, "默认映射" + copyFrom.sourceClass().getName() + "所有属性");
+			return new ClassHelper(copyFrom.sourceClass()).getFieldContexts();
+		}
+		return new CopyFromFieldContextFilter(copyFrom).filter(getFieldContexts());
 	}
 	
 	/**
@@ -62,7 +83,7 @@ public class ClassHelper {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((clazz == null) ? 0 : clazz.getName().hashCode());
+		result = prime * result + ((clazz == null) ? 0 : clazz.getTypeName().hashCode());
 		return result;
 	}
 
@@ -78,7 +99,7 @@ public class ClassHelper {
 		if (clazz == null) {
 			if (other.clazz != null)
 				return false;
-		} else if (!clazz.getName().equals(other.clazz.getName()))
+		} else if (!clazz.getTypeName().equals(other.clazz.getTypeName()))
 			return false;
 		return true;
 	}
