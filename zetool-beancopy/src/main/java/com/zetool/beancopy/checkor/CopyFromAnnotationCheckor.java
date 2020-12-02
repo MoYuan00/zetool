@@ -6,7 +6,10 @@ import java.util.Map;
 import java.util.Set;
 
 import com.zetool.beancopy.annotation.CopyFrom;
-import com.zetool.beancopy.handler.ClassHelper;
+import com.zetool.beancopy.handler.ClassScanner;
+import com.zetool.beancopy.helper.ClassHelper;
+import com.zetool.beancopy.helper.ClassesHelper;
+import com.zetool.beancopy.helper.FieldContext;
 import com.zetool.beancopy.util.CollectionUtils;
 import com.zetool.beancopy.util.Log;
 
@@ -25,17 +28,17 @@ public class CopyFromAnnotationCheckor {
 		/**
 		 * 源 即 target类上注解标注的类
 		 */
-		private ClassHelper sourceClazz;
+		private ClassHelper<?> sourceClazz;
 		/**
 		 * 目标类
 		 */
-		private ClassHelper targetClazz;
+		private ClassHelper<?> targetClazz;
 		/**
 		 * 目标类上的注解
 		 */
 		private CopyFrom copyFrom;
 		
-		public CopyPair(ClassHelper sourceClazz, ClassHelper targetClazz, CopyFrom copyFrom) {
+		public CopyPair(ClassHelper<?> sourceClazz, ClassHelper<?> targetClazz, CopyFrom copyFrom) {
 			super();
 			this.sourceClazz = sourceClazz;
 			this.targetClazz = targetClazz;
@@ -86,15 +89,24 @@ public class CopyFromAnnotationCheckor {
 		
 		/**
 		 * 检查注解中的所有属性 targetClazz中是否都存在
-		 * TODO 实际上还需要检查是否为final类型
+		 * 检查是否为final类型，如果是抛出异常
+		 * 检查是否为static类型，如果是警告
 		 * @return
 		 */
 		private boolean checkTargetFields() {
 			Log.info(CopyPair.class, "检查注解中的所有属性target本身是否存在:[" + targetClazz.getClassName() + "]");
 			Map<String, FieldContext> targetFieldMap = targetClazz.getFieldContexts();
 			for(String name : copyFrom.fields()) {
-				if(targetFieldMap.keySet().contains(name)) {
+				FieldContext fieldContext = targetFieldMap.get(name);
+				if(fieldContext != null) {
 					Log.info(CopyPair.class, "注解中的属性[" + name +  "]存在target[" + targetClazz.getClassName() + "]中");
+					if(fieldContext.isFinal()) {
+						Log.error(CopyPair.class, targetClazz.getClassName() + "注解中的属性[" + name +  "]是 final 类型");
+						throw new IllegalStateException(targetClazz.getClassName() + "注解中的属性[" + name +  "]是 final 类型");
+					}
+					if(fieldContext.isStatic()) {
+						Log.worn(CopyPair.class, targetClazz.getClassName() + "注解中的属性[" + name +  "]是 static 类型");
+					}
 				}else {
 					Log.error(CopyPair.class, "注解中的属性[" + name +  "]不存在target[" + targetClazz.getClassName() + "]中");
 					return false;
@@ -137,17 +149,16 @@ public class CopyFromAnnotationCheckor {
 	 * @param classSet 注解类，和被注解的类（target和source）
 	 * @return
 	 */
-	public static boolean check(Set<Class<?>> classSet) {
+	public static boolean check(ClassesHelper classSet) {
 		Log.info(CopyFromAnnotationCheckor.class, "开始检查！");
 		// 获取所有 具有注解的类
-		Set<ClassHelper> needCopyClassSet = 
-				CollectionUtils.trans(new AnnotationClassFilter(CopyFrom.class).filter(classSet),
-						t -> new ClassHelper(t) );
+		Set<ClassHelper<?>> needCopyClassSet = CollectionUtils.trans(classSet.getClassesByAnnotation(CopyFrom.class),
+						t -> new ClassHelper<>(t) );
 		Log.info(CopyFromAnnotationCheckor.class, "被注解的类共" + needCopyClassSet.size() + "个！");
 		
 		// 1. 判断所有注解中的类是否存在
 		needCopyClassSet.forEach((c) -> {
-			for(CopyFrom from : c.getAnnotations(CopyFrom.class)) {
+			for(CopyFrom from : (CopyFrom[])c.getAnnotations(CopyFrom.class)) {
 				if(classSet.contains(from.sourceClass())) {
 					Log.info(CopyFromAnnotationCheckor.class, "注解中的类存在：" + from.sourceClass().getName());
 				} else {
@@ -159,7 +170,7 @@ public class CopyFromAnnotationCheckor {
 		// 2. 判断所有的注解是否匹配
 		needCopyClassSet.forEach((targetClassHelper)->{
 			for(CopyFrom from : targetClassHelper.getAnnotations(CopyFrom.class)) {
-				CopyPair copyPair = new CopyPair(new ClassHelper(from.sourceClass()), targetClassHelper, from);
+				CopyPair copyPair = new CopyPair(new ClassHelper<>(from.sourceClass()), targetClassHelper, from);
 				if(copyPair.check()) {
 					Log.info(CopyFromAnnotationCheckor.class, "注解匹配成功：" +  targetClassHelper.getClassName() + ":" + from.sourceClass().getName());
 				}else {
@@ -170,5 +181,9 @@ public class CopyFromAnnotationCheckor {
 		});
 		Log.info(CopyFromAnnotationCheckor.class, "通过检查！");
 		return true;
+	}
+	
+	public static boolean check(ClassScanner scanner) {
+		return check(scanner.getClasses());
 	}
 }

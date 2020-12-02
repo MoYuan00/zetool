@@ -1,6 +1,7 @@
 package com.zetool.beancopy.handler;
 
-import java.util.Collection;
+
+import com.zetool.beancopy.helper.ClassesHelper;
 
 /**
  * 类扫描器接口
@@ -45,5 +46,5 @@ public interface ClassScanner {
 	 * 获取所有扫描到的类
 	 * @return 扫描到的所有类的集合
 	 */
-	public Collection<Class<?>> getClasses();
+	public ClassesHelper getClasses();
 }

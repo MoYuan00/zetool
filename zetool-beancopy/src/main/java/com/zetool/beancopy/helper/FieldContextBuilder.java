@@ -1,9 +1,14 @@
-package com.zetool.beancopy.checkor;
+package com.zetool.beancopy.helper;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 构造一个FieldContext集合
+ * @author loki02
+ * @date 2020年12月2日
+ */
 public class FieldContextBuilder {
 	
 	/**

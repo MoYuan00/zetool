@@ -1,10 +1,11 @@
-package com.zetool.beancopy.checkor;
+package com.zetool.beancopy.helper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zetool.beancopy.util.Log;
 
 /**
  * 封装 java 自带的Field类
@@ -12,7 +13,7 @@ import com.google.gson.reflect.TypeToken;
  * @author Rnti
  *
  */
-public class SimpleFieldContext implements FieldContext {
+public class SimpleFieldContext extends FieldContext {
 	
 	private Field field;
 	private Object obj;
@@ -51,6 +52,7 @@ public class SimpleFieldContext implements FieldContext {
 	@Override
 	public SimpleFieldContext setValue(Object value) {
 		try {
+			Log.debug(SimpleFieldContext.class, "set 的字段类型为:" + value.getClass().getTypeName());
 			field.set(obj, value);
 			return this;
 		} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -63,6 +65,7 @@ public class SimpleFieldContext implements FieldContext {
 	public Object cloneValue() {
 		if(obj == null) throw new IllegalArgumentException("object is null, can not clone this value!");
 		TypeToken<?> typeToken = TypeToken.get(field.getType());
+		Log.debug(SimpleFieldContext.class, "clone 字段类型为:" + typeToken.getType());
 		return new Gson().fromJson(new Gson().toJson(getValue()), typeToken.getType());
 	}
 

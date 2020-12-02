@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * 集合工具类
@@ -14,6 +15,36 @@ import java.util.function.Function;
  *
  */
 public final class CollectionUtils {
+	
+	/**
+	 * 找到第一个匹配的
+	 * 如果没有找到返回null
+	 * @param <T>
+	 * @param arr
+	 * @param predicate
+	 * @return
+	 */
+	public final static <T> T findFirst(T[] arr, Predicate<T> predicate) {
+		for(T t : arr) 
+			if(predicate.test(t))
+				return t;
+		return null;
+	}
+	
+	/**
+	 * 找到第一个匹配的
+	 * 如果没有找到返回null
+	 * @param <T>
+	 * @param arr
+	 * @param predicate
+	 * @return
+	 */
+	public final static <T> T findFirst(Iterable<T> arr, Predicate<T> predicate) {
+		for(T t : arr) 
+			if(predicate.test(t))
+				return t;
+		return null;
+	}
 	
 	/**
 	 * 将T类型转换为R类型Set

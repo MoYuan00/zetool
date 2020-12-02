@@ -8,8 +8,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Map;
 
-import com.zetool.beancopy.checkor.FieldContext;
-import com.zetool.beancopy.checkor.FieldContextBuilder;
+import com.zetool.beancopy.helper.FieldContext;
+import com.zetool.beancopy.helper.FieldContextBuilder;
 
 
 class EqualsObjecCopyExecutor {

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.zetool.beancopy.helper.ClassesHelper;
 import com.zetool.beancopy.util.Log;
 
 /**
@@ -46,11 +47,11 @@ public class SimpleClassScanner implements ClassScanner {
 	
 	
 	@Override
-	public Collection<Class<?>> getClasses() {
+	public ClassesHelper getClasses() {
 		classSet = new HashSet<Class<?>>();
 		for(String pgName : packageSet) 
 			classSet.addAll(scanPackage(pgName));
-		return classSet;
+		return new ClassesHelper().setClassSet(classSet);
 	}
 	
 	

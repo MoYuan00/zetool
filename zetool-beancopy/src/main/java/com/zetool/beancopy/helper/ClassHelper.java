@@ -1,13 +1,10 @@
-package com.zetool.beancopy.handler;
+package com.zetool.beancopy.helper;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Map;
 
 import com.zetool.beancopy.annotation.CopyFrom;
-import com.zetool.beancopy.checkor.CopyFromFieldContextFilter;
-import com.zetool.beancopy.checkor.FieldContext;
-import com.zetool.beancopy.checkor.FieldContextBuilder;
 import com.zetool.beancopy.util.Log;
 
 /**
@@ -16,14 +13,25 @@ import com.zetool.beancopy.util.Log;
  * @author loki02
  * @date 2020年12月1日
  */
-public class ClassHelper {
+public class ClassHelper<T> {
 	
-	private Class<?> clazz;
+	private Class<T> clazz;
+	
+	/**
+	 * 当前类绑定的对象
+	 */
+	private T obj;
 	
 	private Map<String, FieldContext> fieldContextMap;
 	
-	public ClassHelper(Class<?> clazz) {
+	public ClassHelper(Class<T> clazz) {
 		this.clazz = clazz;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ClassHelper(T obj) {
+		this.obj = obj;
+		this.clazz = (Class<T>) obj.getClass();
 	}
 	
 	public String getClassName() {
@@ -35,12 +43,33 @@ public class ClassHelper {
 	}
 	
 	/**
+	 * 创建Object对象实例
+	 * @return
+	 * @throws InstantiationException 
+	 * @throws IllegalAccessException
+	 */
+	public T newInstance() throws InstantiationException, IllegalAccessException {
+		return clazz.newInstance();
+	}
+	
+	/**
+	 * 获取类绑定的对象
+	 * @return
+	 */
+	public T getBindObject() {
+		return obj;
+	}
+	
+	/**
 	 * 获取所有字段的集合
 	 * @return
 	 */
 	public Map<String, FieldContext> getFieldContexts() {
 		if(fieldContextMap == null)
-			fieldContextMap =  FieldContextBuilder.buildSimpleFieldContext(clazz);
+			if(obj == null)
+				fieldContextMap =  FieldContextBuilder.buildSimpleFieldContext(clazz);
+			else
+				fieldContextMap =  FieldContextBuilder.buildSimpleFieldContext(obj);
 		return fieldContextMap;
 	}
 	
@@ -52,9 +81,23 @@ public class ClassHelper {
 	public Map<String, FieldContext> getFieldContextsByCopyFrom(CopyFrom copyFrom) {
 		if(copyFrom.fields().length == 0) {// 默认拷贝所有属性
 			Log.info(ClassHelper.class, "默认映射" + copyFrom.sourceClass().getName() + "所有属性");
-			return new ClassHelper(copyFrom.sourceClass()).getFieldContexts();
+			return new ClassHelper<>(copyFrom.sourceClass()).getFieldContexts();
 		}
-		return new CopyFromFieldContextFilter(copyFrom).filter(getFieldContexts());
+		return new FieldContext.CopyFromFieldContextFilter(copyFrom).filter(getFieldContexts());
+	}
+	
+	/**
+	 * 绑定一个对象
+	 * 并更新所有字段，将所有字段也绑定对象
+	 * @param obj
+	 */
+	public ClassHelper<T> bindObject(T obj) {
+		if(obj != this.obj) {
+			for(FieldContext fieldContext : getFieldContexts().values()) 
+				fieldContext.setObject(obj);
+			this.obj = obj;
+		}
+		return this;
 	}
 	
 	/**
@@ -62,8 +105,8 @@ public class ClassHelper {
 	 * @param annClazz
 	 * @return
 	 */
-	public <T extends Annotation> T[] getAnnotations(Class<T> annClazz) {
-		return clazz.getAnnotationsByType(annClazz);
+	public <A extends Annotation> A[] getAnnotations(Class<A> annClazz) {
+		return (clazz).getAnnotationsByType(annClazz);
 	}
 	
 	@Override
@@ -95,7 +138,7 @@ public class ClassHelper {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ClassHelper other = (ClassHelper) obj;
+		ClassHelper<?> other = (ClassHelper<?>) obj;
 		if (clazz == null) {
 			if (other.clazz != null)
 				return false;
