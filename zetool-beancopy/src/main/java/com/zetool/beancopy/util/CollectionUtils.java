@@ -15,6 +15,20 @@ import java.util.function.Function;
  */
 public final class CollectionUtils {
 	
+	/**
+	 * 将T类型转换为R类型Set
+	 * @param <T>
+	 * @param <R>
+	 * @param set
+	 * @param call
+	 * @return
+	 */
+	public final static <T, R> Set<R> trans(Set<T> set, Function<T, R> call){
+		Set<R> result = new HashSet<R>();
+		for(T t : set) result.add(call.apply(t));
+		return result;
+	}
+	
 	
 	/**
 	 * 将一个数组T[]转换成HashSet<R>. 

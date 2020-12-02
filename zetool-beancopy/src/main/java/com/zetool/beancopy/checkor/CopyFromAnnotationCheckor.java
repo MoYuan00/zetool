@@ -1,12 +1,11 @@
 package com.zetool.beancopy.checkor;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.zetool.beancopy.annotation.CopyFrom;
 import com.zetool.beancopy.handler.ClassHelper;
+import com.zetool.beancopy.util.CollectionUtils;
 import com.zetool.beancopy.util.Log;
 
 /**
@@ -15,6 +14,63 @@ import com.zetool.beancopy.util.Log;
  *
  */
 public class CopyFromAnnotationCheckor {
+	/**
+	 * 检查一个映射
+	 * @author loki02
+	 * @date 2020年12月1日
+	 */
+	private static class CopyPair{
+		private ClassHelper sourceClazz;
+		private ClassHelper targetClazz;
+		private CopyFrom copyFrom;
+		public CopyPair(ClassHelper sourceClazz, ClassHelper targetClazz, CopyFrom copyFrom) {
+			super();
+			this.sourceClazz = sourceClazz;
+			this.targetClazz = targetClazz;
+			this.copyFrom = copyFrom;
+		}
+		/**
+		 * 检查source 和 target对于注解copyfrom是否匹配
+		 * @return
+		 */
+		public boolean check() {
+			if(sourceClazz.classIsNull() || targetClazz.classIsNull() || copyFrom == null) throw new NullPointerException();
+			if(!checkTargetFields()) return false;
+			CopyFromFieldContextFilter filter = new CopyFromFieldContextFilter(copyFrom);
+			Map<String, FieldContext> sourceFieldMap = sourceClazz.getFieldContexts();
+			Map<String, FieldContext> targetFieldMap = filter.filter(targetClazz.getFieldContexts());
+			Log.info(CopyPair.class, "检查source:" + sourceClazz.getClassName() + " <- target" + targetClazz.getClassName());
+			for (String fieldName : targetFieldMap.keySet()) {
+				if(sourceFieldMap.containsKey(fieldName)) {// TODO 只判断名字是否相同 TODO 实际上还需要检查是否为final类型
+					Log.info(CopyPair.class, "注解中的属性[" + fieldName +  "]存在source[" + sourceClazz.getClassName() + "中]");
+				}else {
+					Log.error(CopyPair.class, "注解中的属性[" + fieldName +  "]不存在source:[" + sourceClazz.getClassName() + "]中");
+					return false;
+				}
+			}
+			return true;
+		}
+		
+		/**
+		 * 检查注解中的所有属性 targetClazz中是否都存在
+		 * TODO 实际上还需要检查是否为final类型
+		 * @return
+		 */
+		private boolean checkTargetFields() {
+			Log.info(CopyPair.class, "检查注解中的所有属性target本身是否存在:[" + targetClazz.getClassName() + "]");
+			Map<String, FieldContext> targetFieldMap = targetClazz.getFieldContexts();
+			for(String name : copyFrom.fields()) {
+				if(targetFieldMap.keySet().contains(name)) {
+					Log.info(CopyPair.class, "注解中的属性[" + name +  "]存在target[" + targetClazz.getClassName() + "]中");
+				}else {
+					Log.error(CopyPair.class, "注解中的属性[" + name +  "]不存在target[" + targetClazz.getClassName() + "]中");
+					return false;
+				}
+			}
+			return true;
+		}
+		
+	}
 	
 	/**
 	 * 判断所有的类是否注解关联正确
@@ -24,71 +80,35 @@ public class CopyFromAnnotationCheckor {
 	public static boolean check(Set<Class<?>> classSet) {
 		Log.info(CopyFromAnnotationCheckor.class, "开始检查！");
 		// 获取所有 具有注解的类
-		HashMap<Class<?>, CopyFrom> classAnnMap = new HashMap<>();
-		Set<Class<?>> ncClassSet = classSet.stream().filter((c)->{
-			Log.info(CopyFromAnnotationCheckor.class, "检查：" + c);
-			CopyFrom a[] = (CopyFrom[]) new ClassHelper(c).getAnnotations(CopyFrom.class);
-			// TODO 这里需要处理多重注解
-			if(a.length > 0) {
-				Log.info(CopyFromAnnotationCheckor.class, "获取到注解: " + a[0].annotationType().getName());
-				classAnnMap.put(c, a[0]);
-				return true;
-			}
-			return false;
-		}).collect(Collectors.toSet());
-		Log.info(CopyFromAnnotationCheckor.class, "被注解的类共" + ncClassSet.size() + "个！");
+		Set<ClassHelper> needCopyClassSet = 
+				CollectionUtils.trans(new AnnotationClassFilter(CopyFrom.class).filter(classSet),
+						t -> new ClassHelper(t) );
+		Log.info(CopyFromAnnotationCheckor.class, "被注解的类共" + needCopyClassSet.size() + "个！");
 		
 		// 1. 判断所有注解中的类是否存在
-		ncClassSet.forEach((c)->{
-			if(!classSet.contains(classAnnMap.get(c).sourceClass())) {
-				throw new RuntimeException("注解中的类不存在" + 
-						classAnnMap.get(c).sourceClass());
+		needCopyClassSet.forEach((c) -> {
+			for(CopyFrom from : c.getAnnotations(CopyFrom.class)) {
+				if(classSet.contains(from.sourceClass())) {
+					Log.info(CopyFromAnnotationCheckor.class, "注解中的类存在：" + from.sourceClass().getName());
+				} else {
+					throw new RuntimeException("注解中的类不存在");
+				}
 			}
 		});
 		
 		// 2. 判断所有的注解是否匹配
-		ncClassSet.forEach((c)->{
-			CopyFrom ann = classAnnMap.get(c);
-			if(!check(ann.sourceClass(), c, classAnnMap.get(c))) {
-				throw new RuntimeException(c.getName() + "的注解不匹配！");
+		needCopyClassSet.forEach((targetClassHelper)->{
+			for(CopyFrom from : targetClassHelper.getAnnotations(CopyFrom.class)) {
+				CopyPair copyPair = new CopyPair(new ClassHelper(from.sourceClass()), targetClassHelper, from);
+				if(copyPair.check()) {
+					Log.info(CopyFromAnnotationCheckor.class, "注解匹配成功：" +  targetClassHelper.getClassName() + ":" + from.sourceClass().getName());
+				}else {
+					throw new IllegalArgumentException("注解配置错误！" 
+								+ targetClassHelper.getClassName() + ":" + from.sourceClass());
+				}
 			}
 		});
 		Log.info(CopyFromAnnotationCheckor.class, "通过检查！");
-		return true;
-	}
-	
-	
-	
-	/**
-	 * 判断注解正确性
-	 * 1。 注解中的属性，toClass中是否全有
-	 * 2。注解类是不是传入的fromClass -> 不是则抛出参数错误异常
-	 * 3.注解中的属性，fromClass中是否全有
-	 * @return 若以上3个全满足，返回true
-	 */
-	private static boolean check(Class<?> fromClass, Class<?> toClass, CopyFrom ann) {
-		// 获取target 和 source 中的属性集合
-		Map<String, FieldContext> fromFields = FieldContextBuilder.buildSimpleFieldContext(fromClass);
-		Map<String, FieldContext> toFields = FieldContextBuilder.buildSimpleFieldContext(toClass);
-		// 获取注解中标注的 属性信息
-		String[] fieldInfo = ann.fields();
-		// 1. 判断注解中的属性，自己类是不是都有
-		for(String fieldName : fieldInfo) {
-			if(!toFields.containsKey(fieldName)) {
-				Log.error(CopyFromAnnotationCheckor.class, "本类" + toClass.getName() + "中缺少注解中的属性：" + fieldName);
-				return false;
-			}
-		}
-		// 2. 获取注解标注的类是不是这个类
-		if(!ann.sourceClass().equals(fromClass)) // 如果传入的fromclass 和 注解上的不一致，抛出参数传入错误异常
-			throw new IllegalArgumentException(toClass.getName() + " copy from " + fromClass.getClass());
-		// 3. 判断是不是全部存在于目标类中
-		for(String fieldName : fieldInfo) {
-			if(!fromFields.containsKey(fieldName)) {
-				Log.error(CopyFromAnnotationCheckor.class, "匹配失败，" + fieldName + "不在" + fromClass.getName() + "中");
-				return false;
-			}
-		}
 		return true;
 	}
 }

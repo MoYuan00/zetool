@@ -1,6 +1,5 @@
 package com.zetool.beancopy.checkor;
 
-import java.util.Map;
 
 import com.google.gson.Gson;
 

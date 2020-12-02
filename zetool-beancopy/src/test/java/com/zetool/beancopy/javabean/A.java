@@ -6,7 +6,7 @@ import com.zetool.beancopy.util.CollectionUtils;
 
 public class A {
 	String name = "name is A";
-    String password;
+    String password = "aaa password";
     List<Object> list = CollectionUtils.toList(new Object[] {"a", "aa"});
     List<Integer>[] listArray = new List[]
     		{CollectionUtils.toList(new Integer[] {11, 33}), 
