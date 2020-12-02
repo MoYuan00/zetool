@@ -1,5 +1,7 @@
 package com.zetool.beancopy.checkor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,9 +22,19 @@ public class CopyFromAnnotationCheckor {
 	 * @date 2020年12月1日
 	 */
 	private static class CopyPair{
+		/**
+		 * 源 即 target类上注解标注的类
+		 */
 		private ClassHelper sourceClazz;
+		/**
+		 * 目标类
+		 */
 		private ClassHelper targetClazz;
+		/**
+		 * 目标类上的注解
+		 */
 		private CopyFrom copyFrom;
+		
 		public CopyPair(ClassHelper sourceClazz, ClassHelper targetClazz, CopyFrom copyFrom) {
 			super();
 			this.sourceClazz = sourceClazz;
@@ -40,11 +52,33 @@ public class CopyFromAnnotationCheckor {
 			Map<String, FieldContext> sourceFieldMap = sourceClazz.getFieldContexts();
 			Map<String, FieldContext> targetFieldMap = filter.filter(targetClazz.getFieldContexts());
 			Log.info(CopyPair.class, "检查source:" + sourceClazz.getClassName() + " <- target" + targetClazz.getClassName());
+			
+			List<FieldContextPair> fieldPairList = new ArrayList<>(); // 存放映射关系
 			for (String fieldName : targetFieldMap.keySet()) {
 				if(sourceFieldMap.containsKey(fieldName)) {// TODO 只判断名字是否相同 TODO 实际上还需要检查是否为final类型
 					Log.info(CopyPair.class, "注解中的属性[" + fieldName +  "]存在source[" + sourceClazz.getClassName() + "中]");
+					fieldPairList.add(new FieldContextPair(sourceFieldMap.get(fieldName), targetFieldMap.get(fieldName)));
 				}else {
-					Log.error(CopyPair.class, "注解中的属性[" + fieldName +  "]不存在source:[" + sourceClazz.getClassName() + "]中");
+					Log.error(CopyPair.class, "类型不匹配： 注解中的属性[" + fieldName +  "]不存在source:[" + sourceClazz.getClassName() + "]中");
+					return false;
+				}
+			}
+			if(!checkTypeIsEquals(fieldPairList)) return false;
+			return true;
+		}
+		
+		/**
+		 * 判断source和target对应的类型是否相同
+		 * @return
+		 */
+		private boolean checkTypeIsEquals(List<FieldContextPair> pairList) {
+			for(FieldContextPair pari : pairList) {
+				if(pari.isMatch()) {
+					Log.info(CopyPair.class, pari.getTargetFC().getName() + " is " + pari.getTargetFC().getType() 
+					+ "\n" + pari.getSourceFC().getName() + " is " + pari.getSourceFC().getType());
+				} else {
+					Log.error(CopyPair.class, "类型不兼容：" + pari.getTargetFC().getName() + " is " + pari.getTargetFC().getType() 
+							+ "\n" + pari.getSourceFC().getName() + " is " + pari.getSourceFC().getType());
 					return false;
 				}
 			}
@@ -70,6 +104,33 @@ public class CopyFromAnnotationCheckor {
 			return true;
 		}
 		
+		/**
+		 * 一对属性映射关系
+		 * @author loki02
+		 * @date 2020年12月2日
+		 */
+		private static class FieldContextPair{
+			private FieldContext sourceFC;
+			private FieldContext targetFC;
+			public FieldContextPair(FieldContext sourceFC, FieldContext targetFC) {
+				super();
+				this.sourceFC = sourceFC;
+				this.targetFC = targetFC;
+			}
+			public FieldContext getSourceFC() {
+				return sourceFC;
+			}
+			public FieldContext getTargetFC() {
+				return targetFC;
+			}
+			/**
+			 * 是否相匹配（可互相转换：当前是否支持相互拷贝）
+			 * @return
+			 */
+			public boolean isMatch() {
+				return sourceFC.getType().equals(targetFC.getType());
+			}
+		}
 	}
 	
 	/**

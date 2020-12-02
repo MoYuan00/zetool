@@ -10,6 +10,6 @@ import com.zetool.beancopy.annotation.CopyFrom;
 public class C {
 	 String type;
 	 String password = "ccc password";
-//	 List<Object> list;
-	 Set<Object> list;
+	 List<Object> list;
+//	 Set<Object> list;
 }
