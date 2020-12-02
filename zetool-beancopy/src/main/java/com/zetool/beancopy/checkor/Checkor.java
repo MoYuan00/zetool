@@ -18,7 +18,7 @@ import com.zetool.beancopy.util.Log;
  * @author Rnti
  *
  */
-public class CopyFromAnnotationCheckor {
+public class Checkor {
 	/**
 	 * 检查一个映射
 	 * @author loki02
@@ -150,17 +150,17 @@ public class CopyFromAnnotationCheckor {
 	 * @return
 	 */
 	public static boolean check(ClassesHelper classSet) {
-		Log.info(CopyFromAnnotationCheckor.class, "开始检查！");
+		Log.info(Checkor.class, "开始检查！");
 		// 获取所有 具有注解的类
 		Set<ClassHelper<?>> needCopyClassSet = CollectionUtils.trans(classSet.getClassesByAnnotation(CopyFrom.class),
 						t -> new ClassHelper<>(t) );
-		Log.info(CopyFromAnnotationCheckor.class, "被注解的类共" + needCopyClassSet.size() + "个！");
+		Log.info(Checkor.class, "被注解的类共" + needCopyClassSet.size() + "个！");
 		
 		// 1. 判断所有注解中的类是否存在
 		needCopyClassSet.forEach((c) -> {
 			for(CopyFrom from : (CopyFrom[])c.getAnnotations(CopyFrom.class)) {
 				if(classSet.contains(from.sourceClass())) {
-					Log.info(CopyFromAnnotationCheckor.class, "注解中的类存在：" + from.sourceClass().getName());
+					Log.info(Checkor.class, "注解中的类存在：" + from.sourceClass().getName());
 				} else {
 					throw new RuntimeException("注解中的类不存在");
 				}
@@ -172,14 +172,14 @@ public class CopyFromAnnotationCheckor {
 			for(CopyFrom from : targetClassHelper.getAnnotations(CopyFrom.class)) {
 				CopyPair copyPair = new CopyPair(new ClassHelper<>(from.sourceClass()), targetClassHelper, from);
 				if(copyPair.check()) {
-					Log.info(CopyFromAnnotationCheckor.class, "注解匹配成功：" +  targetClassHelper.getClassName() + ":" + from.sourceClass().getName());
+					Log.info(Checkor.class, "注解匹配成功：" +  targetClassHelper.getClassName() + ":" + from.sourceClass().getName());
 				}else {
 					throw new IllegalArgumentException("注解配置错误！" 
 								+ targetClassHelper.getClassName() + ":" + from.sourceClass());
 				}
 			}
 		});
-		Log.info(CopyFromAnnotationCheckor.class, "通过检查！");
+		Log.info(Checkor.class, "通过检查！");
 		return true;
 	}
 	

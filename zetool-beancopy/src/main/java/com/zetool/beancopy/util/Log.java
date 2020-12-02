@@ -14,7 +14,8 @@ public final class Log {
 	private static final int INFO = 2;
 	private static final int WORN = 3;
 	private static final int ERROR = 4;
-	private static final int LEVEL = ANY;
+	
+	public static int LEVEL = ANY;
 	
 	private static final String[] LEVEL_STRING = {"any", "debug", "info", "worn", "error"};
 	

@@ -13,5 +13,4 @@ public class A {
     		CollectionUtils.toList(new Integer[] {11, 33}) };
     Integer objArray[] = {1, 2, 3};
     Integer multArray[][][] = {{{1, 3}, {3, 0}}, {{1, 3}, {9, 9}}};
-    
 }
