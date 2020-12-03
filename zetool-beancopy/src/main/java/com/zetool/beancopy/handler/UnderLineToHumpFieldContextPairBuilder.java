@@ -1,9 +1,9 @@
 package com.zetool.beancopy.handler;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.zetool.beancopy.checkor.CopyPair;
 import com.zetool.beancopy.checkor.FieldContextPair;
@@ -21,17 +21,17 @@ public class UnderLineToHumpFieldContextPairBuilder implements FieldContextPairB
 	public <S, T> Collection<FieldContextPair> getFieldContexPairs(CopyPair<S, T> copyPair) {
 		Map<String, FieldContext> sourceFieldMap = copyPair.getSourceFieldMap();
 		Map<String, FieldContext> targetFieldMap = copyPair.getTargetFieldMap();
-		
-		Set<FieldContextPair> contextPairs = new HashSet<FieldContextPair>();
+		List<FieldContextPair> contextPairs = new ArrayList<FieldContextPair>();
 		// targetField中的应该是下划线风格 
 		// sourceField中应该 是驼峰
-		for(String name :targetFieldMap.keySet()) {
-			String humpName = getHumpStyleName(name);// 下划线风格
-			FieldContext sourceField = sourceFieldMap.get(humpName);
-			if(sourceField == null) {
-				throw new IllegalStateException("下划线映射驼峰匹配失败！");
+		for (String fieldName : targetFieldMap.keySet()) {
+			String humpName = getHumpStyleName(fieldName);// 驼峰风格
+			FieldContext sourceContext = sourceFieldMap.get(humpName);
+			if(sourceContext != null) {
+				contextPairs.add(new FieldContextPair(sourceContext, targetFieldMap.get(fieldName)));
+			}else {
+				throw new IllegalStateException("下划线映射驼峰匹配失败！");// 表示映射出错
 			}
-			contextPairs.add(new FieldContextPair(sourceField, targetFieldMap.get(name)));
 		}
 		return contextPairs;
 	}

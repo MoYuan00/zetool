@@ -31,6 +31,21 @@ public @interface CopyFrom {
 	 */
 	String[] fields() default {};
 	
+	/**
+	 * 使用的映射类型
+	 * 默认DEFAULT
+	 * @return
+	 */
+	MirrorType mirrorType() default MirrorType.DEFAULT;
 	
-
+	/**
+	 * 映射类型
+	 * @author loki02
+	 * @date 2020年12月3日
+	 */
+	public static enum MirrorType{
+		DEFAULT,
+		UNDER_LINE_TO_HUMP,
+		HUMP_TO_UNDER_LINE
+	}
 }

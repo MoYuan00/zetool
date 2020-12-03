@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.zetool.beancopy.annotation.CopyFrom;
+import com.zetool.beancopy.annotation.CopyFrom.MirrorType;
 import com.zetool.beancopy.handler.FieldContextPairBuilderFactory;
 import com.zetool.beancopy.helper.ClassHelper;
 import com.zetool.beancopy.helper.FieldContext;
@@ -28,6 +29,10 @@ public class CopyPair<S, T>{
 	 * 目标类上的注解
 	 */
 	private CopyFrom copyFrom;
+	
+	public MirrorType getMirrorType() {
+		return copyFrom.mirrorType();
+	}
 	
 	/**
 	 * 绑定源对象
@@ -80,8 +85,8 @@ public class CopyPair<S, T>{
 	public boolean check() {
 		if(sourceClazz.classIsNull() || targetClazz.classIsNull() || copyFrom == null) throw new NullPointerException();
 		if(!checkTargetFields()) return false;
-		Log.info(CopyPair.class, "检查source:" + sourceClazz.getClassName() + " <- target" + targetClazz.getClassName());
-		Collection<FieldContextPair> fieldPairList = FieldContextPairBuilderFactory.getBuilder().getFieldContexPairs(this);
+		Log.debug(CopyPair.class, "检查source:" + sourceClazz.getClassName() + " <- target" + targetClazz.getClassName());
+		Collection<FieldContextPair> fieldPairList = FieldContextPairBuilderFactory.getBuilder(getMirrorType()).getFieldContexPairs(this);
 		if(!checkTypeIsEquals(fieldPairList)) return false;
 		return true;
 	}
@@ -93,7 +98,7 @@ public class CopyPair<S, T>{
 	private boolean checkTypeIsEquals(Collection<FieldContextPair> pairList) {
 		for(FieldContextPair pari : pairList) {
 			if(pari.isMatch()) {
-				Log.info(CopyPair.class, pari.getTargetFC().getName() + " is " + pari.getTargetFC().getType() 
+				Log.debug(CopyPair.class, pari.getTargetFC().getName() + " is " + pari.getTargetFC().getType() 
 							+ "\n" + pari.getSourceFC().getName() + " is " + pari.getSourceFC().getType());
 			} else {
 				Log.error(CopyPair.class, "类型不兼容：" + pari.getTargetFC().getName() + " is " + pari.getTargetFC().getType() 
@@ -111,12 +116,12 @@ public class CopyPair<S, T>{
 	 * @return
 	 */
 	private boolean checkTargetFields() {
-		Log.info(CopyPair.class, "检查注解中的所有属性target本身是否存在:[" + targetClazz.getClassName() + "]");
+		Log.debug(CopyPair.class, "检查注解中的所有属性target本身是否存在:[" + targetClazz.getClassName() + "]");
 		Map<String, FieldContext> targetFieldMap = targetClazz.getFieldContexts();
 		for(String name : copyFrom.fields()) {
 			FieldContext fieldContext = targetFieldMap.get(name);
 			if(fieldContext != null) {
-				Log.info(CopyPair.class, "注解中的属性[" + name +  "]存在target[" + targetClazz.getClassName() + "]中");
+				Log.debug(CopyPair.class, "注解中的属性[" + name +  "]存在target[" + targetClazz.getClassName() + "]中");
 				if(fieldContext.isFinal()) {
 					Log.error(CopyPair.class, targetClazz.getClassName() + "注解中的属性[" + name +  "]是 final 类型");
 					throw new IllegalStateException(targetClazz.getClassName() + "注解中的属性[" + name +  "]是 final 类型");

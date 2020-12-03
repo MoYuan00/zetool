@@ -28,7 +28,7 @@ public class SimpleClassScanner implements ClassScanner {
 	
 	@Override
 	public ClassScanner addPackageClasses(String packageName) {
-		Log.info(SimpleClassScanner.class, "添加包[" + packageName + "]");
+		Log.info(SimpleClassScanner.class, "add package[" + packageName + "]");
 		packageSet.add(packageName);
 		return this;
 	}
@@ -37,7 +37,7 @@ public class SimpleClassScanner implements ClassScanner {
 	public ClassScanner addClass(String className) {
 		try {
 			Class<?> clazz = Class.forName(className);
-			Log.info(SimpleClassScanner.class, "添加类<" + className + ">");
+			Log.info(SimpleClassScanner.class, "add class<" + className + ">");
 			classSet.add(clazz);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -63,10 +63,10 @@ public class SimpleClassScanner implements ClassScanner {
 	 * @throws ClassNotFoundException
 	 */
 	private Collection<Class<?>> scanPackage(String packageName) {
-		Log.info(SimpleClassScanner.class, "扫描包：" + packageName);
+		Log.debug(SimpleClassScanner.class, "scan package name is:" + packageName);
 		try {
 			Collection<Class<?>> classes = new ClassScannerUtils().packageScanner(packageName); // 获取当前包下以及子包下所以的类
-			Log.info(SimpleClassScanner.class, "扫描到共:" + classes.size() + "个类");
+			Log.debug(SimpleClassScanner.class, "class is scanned " + classes.size() + " total of number");
 			return classes;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

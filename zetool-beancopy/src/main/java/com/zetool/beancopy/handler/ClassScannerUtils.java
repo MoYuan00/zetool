@@ -61,7 +61,7 @@ public class ClassScannerUtils {
 	private void jarScanner(String packageName, URL url) {
 		try {
 			JarFile jarFile = ((JarURLConnection)(url.openConnection())).getJarFile();
-			Log.info(ClassScannerUtils.class, "扫描jar:" + jarFile.getName());
+			Log.info(ClassScannerUtils.class, "scan jar:" + jarFile.getName());
 			Enumeration<JarEntry> entries = jarFile.entries();
 			while(entries.hasMoreElements()) {
 				JarEntry entry = entries.nextElement();
@@ -101,7 +101,7 @@ public class ClassScannerUtils {
 	 */
 	private void fileScanner(String packageName, String packagePath) 
 					throws FileNotFoundException, ClassNotFoundException{
-		Log.info(ClassScannerUtils.class, "扫描包路径：" + packagePath);
+		Log.debug(ClassScannerUtils.class, "scan package path:" + packagePath);
 		// 深度优先扫描： 可以传递包名
 		File file = new File(packagePath);
 		if(!file.exists())
@@ -114,7 +114,7 @@ public class ClassScannerUtils {
 				String className = nextFile.getName();
 				className = className.substring(0, className.length() - 6);// 去掉.class
 				Class<?> clazz = Class.forName(packageName + '.' + className);
-				Log.info(ClassScannerUtils.class, "扫描到class: " + clazz.getName());
+				Log.debug(ClassScannerUtils.class, "is scanned class: " + clazz.getName());
 				classSet.add(clazz); // 添加进来
 			}
 		}

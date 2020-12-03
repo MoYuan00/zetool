@@ -51,7 +51,9 @@ public class SimpleFieldContext extends FieldContext {
 
 	@Override
 	public SimpleFieldContext setValue(Object value) {
+		if(value == null) return this;
 		try {
+			
 			Log.debug(SimpleFieldContext.class, "set 的字段类型为:" + value.getClass().getTypeName());
 			field.set(obj, value);
 			return this;

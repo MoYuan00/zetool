@@ -80,8 +80,8 @@ public class ClassHelper<T> {
 	 */
 	public Map<String, FieldContext> getFieldContextsByCopyFrom(CopyFrom copyFrom) {
 		if(copyFrom.fields().length == 0) {// 默认拷贝所有属性
-			Log.info(ClassHelper.class, "默认映射" + copyFrom.sourceClass().getName() + "所有属性");
-			return new ClassHelper<>(copyFrom.sourceClass()).getFieldContexts();
+			Log.info(ClassHelper.class, "默认映射所有属性");
+			return getFieldContexts();
 		}
 		return new FieldContext.CopyFromFieldContextFilter(copyFrom).filter(getFieldContexts());
 	}

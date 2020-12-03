@@ -26,7 +26,7 @@ public class DefaultFieldContextPariBuilder implements FieldContextPairBuilder {
 			if(sourceContext != null) {
 				fieldPairList.add(new FieldContextPair(sourceContext, targetFieldMap.get(fieldName)));
 			}else {
-				throw new IllegalStateException();// 表示映射出错
+				throw new IllegalStateException("没有找到字段: " + fieldName);// 表示映射出错
 			}
 		}
 		return fieldPairList;

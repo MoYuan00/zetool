@@ -25,13 +25,13 @@ public class Checkor {
 		// 获取所有 具有注解的类
 		Set<ClassHelper<?>> needCopyClassSet = CollectionUtils.trans(classSet.getClassesByAnnotation(CopyFrom.class),
 						t -> new ClassHelper<>(t) );
-		Log.info(Checkor.class, "被注解的类共" + needCopyClassSet.size() + "个！");
+		Log.debug(Checkor.class, "被注解的类共" + needCopyClassSet.size() + "个！");
 		
 		// 1. 判断所有注解中的类是否存在
 		needCopyClassSet.forEach((c) -> {
 			for(CopyFrom from : (CopyFrom[])c.getAnnotations(CopyFrom.class)) {
 				if(classSet.contains(from.sourceClass())) {
-					Log.info(Checkor.class, "注解中的类存在：" + from.sourceClass().getName());
+					Log.debug(Checkor.class, "注解中的类存在：" + from.sourceClass().getName());
 				} else {
 					throw new RuntimeException("注解中的类不存在");
 				}
@@ -42,8 +42,9 @@ public class Checkor {
 		needCopyClassSet.forEach((targetClassHelper)->{
 			for(CopyFrom from : targetClassHelper.getAnnotations(CopyFrom.class)) {
 				CopyPair<?, ?> copyPair = new CopyPair<>(new ClassHelper<>(from.sourceClass()), targetClassHelper, from);
+				Log.debug(Checkor.class, "检查映射：" + from.sourceClass() + " <- " + targetClassHelper.getClassName()); 
 				if(copyPair.check()) {
-					Log.info(Checkor.class, "注解匹配成功：" +  targetClassHelper.getClassName() + ":" + from.sourceClass().getName());
+					Log.debug(Checkor.class, "注解匹配成功：" +  targetClassHelper.getClassName() + ":" + from.sourceClass().getName());
 				}else {
 					throw new IllegalArgumentException("注解配置错误！" 
 								+ targetClassHelper.getClassName() + ":" + from.sourceClass());

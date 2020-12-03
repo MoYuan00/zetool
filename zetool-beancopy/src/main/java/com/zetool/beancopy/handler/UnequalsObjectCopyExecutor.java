@@ -44,7 +44,7 @@ class UnequalsObjectCopyExecutor {
 		// 获取targetClass的属性
 		Log.debug(UnequalsObjectCopyExecutor.class, ("可拷贝字段集合:" + CollectionUtils.toString(copyPair.getSourceFieldMap().keySet())));
 		// 获取映射集合
-		Collection<FieldContextPair> fieldContextPairs = FieldContextPairBuilderFactory.getBuilder().getFieldContexPairs(copyPair);
+		Collection<FieldContextPair> fieldContextPairs = FieldContextPairBuilderFactory.getBuilder(copyPair.getMirrorType()).getFieldContexPairs(copyPair);
 		// 执行拷贝
 		fieldContextPairs.forEach((pair)->{
 			Log.debug(UnequalsObjectCopyExecutor.class, "字段名：" + pair.getTargetFC().getName());
