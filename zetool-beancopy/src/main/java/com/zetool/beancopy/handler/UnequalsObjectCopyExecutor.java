@@ -1,8 +1,10 @@
 package com.zetool.beancopy.handler;
 
-import java.util.Map;
+import java.util.Collection;
 
 import com.zetool.beancopy.annotation.CopyFrom;
+import com.zetool.beancopy.checkor.CopyPair;
+import com.zetool.beancopy.checkor.FieldContextPair;
 import com.zetool.beancopy.helper.ClassHelper;
 import com.zetool.beancopy.helper.FieldContext;
 import com.zetool.beancopy.util.CollectionUtils;
@@ -30,27 +32,25 @@ class UnequalsObjectCopyExecutor {
 		if(sourceObj == null || targetClass == null) throw new NullPointerException();
 		Log.debug(UnequalsObjectCopyExecutor.class, "<跨类拷贝>" + sourceObj.getClass().getName() + " to " + targetClass.getName());
 		ClassHelper<Ttarget> targetClassHelper = new ClassHelper<Ttarget>(targetClass);
-		ClassHelper<Tsource> sourceClassHelper = new ClassHelper<Tsource>(sourceObj);
-		// 获取targetClass的属性
-		Map<String, FieldContext> targetFieldMap = targetClassHelper.bindObject(targetClassHelper.newInstance()).getFieldContexts(); 
-		Map<String, FieldContext> sourceFieldMap = sourceClassHelper.bindObject(sourceObj).getFieldContexts();
-		Log.debug(UnequalsObjectCopyExecutor.class, ("可拷贝字段集合:" + CollectionUtils.toString(sourceFieldMap.keySet())));
-		CopyFrom[] targetCopyFroms = targetClassHelper.getAnnotations(CopyFrom.class);		// 获取到映射注解
-		CopyFrom targetCopyFrom = CollectionUtils.findFirst(targetCopyFroms, 
-										(c) -> c.sourceClass().equals(sourceObj.getClass()));
+		CopyFrom targetCopyFrom = CollectionUtils.findFirst(targetClassHelper.getAnnotations(CopyFrom.class), 
+												(c) -> c.sourceClass().equals(sourceObj.getClass()));// 获取到映射注解
 		if(targetCopyFrom == null) {
 			Log.error(UnequalsObjectCopyExecutor.class, "没有找到相应注解：" + sourceObj.getClass());
 			throw new IllegalStateException("不能从" + sourceObj.getClass() + " 拷贝到 " + targetClass);
 		}
-		// 获取到映射集合 b -> a	// b需要从a的哪个字段拷贝
-		targetFieldMap = targetClassHelper.getFieldContextsByCopyFrom(targetCopyFrom);
-		Log.info(UnequalsObjectCopyExecutor.class, ("需要拷贝字段集合:" + CollectionUtils.toString(targetFieldMap.keySet())));
-		targetFieldMap.forEach((name, targetField)->{// 给每个对象赋值
-			Log.debug(UnequalsObjectCopyExecutor.class, "字段名：" + targetField.getName());
-			FieldContext sourceField = sourceFieldMap.get(name);
-			Object obj = sourceField.cloneValue();
+		CopyPair<Tsource, Ttarget> copyPair = new CopyPair<>(new ClassHelper<Tsource>(sourceObj), targetClassHelper, targetCopyFrom);
+		copyPair.bindSourceObject(sourceObj);
+		copyPair.bindTargetObject(targetClassHelper.newInstance());
+		// 获取targetClass的属性
+		Log.debug(UnequalsObjectCopyExecutor.class, ("可拷贝字段集合:" + CollectionUtils.toString(copyPair.getSourceFieldMap().keySet())));
+		// 获取映射集合
+		Collection<FieldContextPair> fieldContextPairs = FieldContextPairBuilderFactory.getBuilder().getFieldContexPairs(copyPair);
+		// 执行拷贝
+		fieldContextPairs.forEach((pair)->{
+			Log.debug(UnequalsObjectCopyExecutor.class, "字段名：" + pair.getTargetFC().getName());
+			Object obj = pair.getSourceFC().cloneValue();// TODO 把拷贝应该也得抽象出来
+			pair.getTargetFC().setValue(obj);
 			Log.debug(UnequalsObjectCopyExecutor.class, "值：" + FieldContext.toString(obj));
-			targetField.setValue(obj);
 		});
 		return targetClassHelper.getBindObject();
 	}

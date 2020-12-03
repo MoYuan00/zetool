@@ -13,8 +13,8 @@ import com.zetool.beancopy.util.StdLog;
 
 public class App2 {
 	public static void main(String[] args) {
-		Log.LEVEL = Log.WORN;
-		Log.logger = new StdLog();
+//		Log.LEVEL = Log.WORN;
+//		Log.logger = new StdLog();
 		simpleCopyTest();
 		
 //		checkTest();
