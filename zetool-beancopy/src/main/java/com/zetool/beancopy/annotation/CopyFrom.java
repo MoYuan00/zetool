@@ -12,6 +12,11 @@ import java.lang.annotation.Target;
  * @author Rnti
  *
  */
+/**
+ * 
+ * @author loki02
+ * @date 2020年12月3日
+ */
 @Repeatable(CopyFroms.class)
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -29,7 +34,7 @@ public @interface CopyFrom {
 	 * 默认拷贝全部属性。
 	 * @return
 	 */
-	String[] fields() default {};
+	String[] thisFields() default {};
 	
 	/**
 	 * 使用的映射类型
@@ -37,6 +42,13 @@ public @interface CopyFrom {
 	 * @return
 	 */
 	MirrorType mirrorType() default MirrorType.DEFAULT;
+	
+	/**
+	 * 要排除在外的字段
+	 * （某些情况下需要拷贝大部分字段，只有少数几个字段不需要拷贝，那么可以考虑这个选项，然后配合默认拷贝所有字段使用）
+	 * @return
+	 */
+	String[] exceptThisFields() default {};
 	
 	/**
 	 * 映射类型

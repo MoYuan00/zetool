@@ -5,7 +5,7 @@ import java.util.List;
 import com.zetool.beancopy.annotation.CopyFrom;
 import com.zetool.beancopy.util.CollectionUtils;
 
-@CopyFrom(sourceClass = A.class, fields ={"name","list", "listArray", "objArray", "multArray"})
+@CopyFrom(sourceClass = A.class, thisFields ={"name","list", "listArray", "objArray", "multArray"})
 public class B {
 	String name = "name is B";
     String type = "class is B";

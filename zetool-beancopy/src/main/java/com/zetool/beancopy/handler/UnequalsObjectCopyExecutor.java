@@ -30,27 +30,27 @@ class UnequalsObjectCopyExecutor {
 	 */
 	public static <Tsource,Ttarget>Ttarget copyFrom(Tsource sourceObj, Class<Ttarget> targetClass) throws InstantiationException, IllegalAccessException {
 		if(sourceObj == null || targetClass == null) throw new NullPointerException();
-		Log.debug(UnequalsObjectCopyExecutor.class, "<跨类拷贝>" + sourceObj.getClass().getName() + " to " + targetClass.getName());
+		Log.debug(UnequalsObjectCopyExecutor.class, "<outer class clone> from " + sourceObj.getClass().getName() + " to " + targetClass.getName());
 		ClassHelper<Ttarget> targetClassHelper = new ClassHelper<Ttarget>(targetClass);
 		CopyFrom targetCopyFrom = CollectionUtils.findFirst(targetClassHelper.getAnnotations(CopyFrom.class), 
 												(c) -> c.sourceClass().equals(sourceObj.getClass()));// 获取到映射注解
 		if(targetCopyFrom == null) {
-			Log.error(UnequalsObjectCopyExecutor.class, "没有找到相应注解：" + sourceObj.getClass());
-			throw new IllegalStateException("不能从" + sourceObj.getClass() + " 拷贝到 " + targetClass);
+			Log.error(UnequalsObjectCopyExecutor.class, "not found annotation match with class " + sourceObj.getClass());
+			throw new IllegalStateException("can not from " + sourceObj.getClass() + " clone to " + targetClass);
 		}
 		CopyPair<Tsource, Ttarget> copyPair = new CopyPair<>(new ClassHelper<Tsource>(sourceObj), targetClassHelper, targetCopyFrom);
 		copyPair.bindSourceObject(sourceObj);
 		copyPair.bindTargetObject(targetClassHelper.newInstance());
 		// 获取targetClass的属性
-		Log.debug(UnequalsObjectCopyExecutor.class, ("可拷贝字段集合:" + CollectionUtils.toString(copyPair.getSourceFieldMap().keySet())));
+		Log.debug(UnequalsObjectCopyExecutor.class, ("can copy field set " + CollectionUtils.toString(copyPair.getSourceFieldMap().keySet())));
 		// 获取映射集合
 		Collection<FieldContextPair> fieldContextPairs = FieldContextPairBuilderFactory.getBuilder(copyPair.getMirrorType()).getFieldContexPairs(copyPair);
 		// 执行拷贝
 		fieldContextPairs.forEach((pair)->{
-			Log.debug(UnequalsObjectCopyExecutor.class, "字段名：" + pair.getTargetFC().getName());
+			Log.debug(UnequalsObjectCopyExecutor.class, "field name is " + pair.getTargetFC().getName());
 			Object obj = pair.getSourceFC().cloneValue();// TODO 把拷贝应该也得抽象出来
 			pair.getTargetFC().setValue(obj);
-			Log.debug(UnequalsObjectCopyExecutor.class, "值：" + FieldContext.toString(obj));
+			Log.debug(UnequalsObjectCopyExecutor.class, "clone field value is：" + FieldContext.toString(obj));
 		});
 		return targetClassHelper.getBindObject();
 	}

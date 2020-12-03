@@ -85,7 +85,7 @@ public class CopyPair<S, T>{
 	public boolean check() {
 		if(sourceClazz.classIsNull() || targetClazz.classIsNull() || copyFrom == null) throw new NullPointerException();
 		if(!checkTargetFields()) return false;
-		Log.debug(CopyPair.class, "检查source:" + sourceClazz.getClassName() + " <- target" + targetClazz.getClassName());
+		Log.debug(CopyPair.class, "check source:" + sourceClazz.getClassName() + " <- target" + targetClazz.getClassName());
 		Collection<FieldContextPair> fieldPairList = FieldContextPairBuilderFactory.getBuilder(getMirrorType()).getFieldContexPairs(this);
 		if(!checkTypeIsEquals(fieldPairList)) return false;
 		return true;
@@ -98,11 +98,10 @@ public class CopyPair<S, T>{
 	private boolean checkTypeIsEquals(Collection<FieldContextPair> pairList) {
 		for(FieldContextPair pari : pairList) {
 			if(pari.isMatch()) {
-				Log.debug(CopyPair.class, pari.getTargetFC().getName() + " is " + pari.getTargetFC().getType() 
-							+ "\n" + pari.getSourceFC().getName() + " is " + pari.getSourceFC().getType());
+				Log.debug(CopyPair.class, "field type is compatible! " + pari.getTargetFC().getName() + " and " + pari.getSourceFC().getName());
 			} else {
-				Log.error(CopyPair.class, "类型不兼容：" + pari.getTargetFC().getName() + " is " + pari.getTargetFC().getType() 
-							+ "\n" + pari.getSourceFC().getName() + " is " + pari.getSourceFC().getType());
+				Log.error(CopyPair.class, "field type is not compatible! " + pari.getTargetFC().getName() + " is " + pari.getTargetFC().getType() 
+							+ ", but" + pari.getSourceFC().getName() + " is " + pari.getSourceFC().getType());
 				return false;
 			}
 		}
@@ -116,21 +115,20 @@ public class CopyPair<S, T>{
 	 * @return
 	 */
 	private boolean checkTargetFields() {
-		Log.debug(CopyPair.class, "检查注解中的所有属性target本身是否存在:[" + targetClazz.getClassName() + "]");
 		Map<String, FieldContext> targetFieldMap = targetClazz.getFieldContexts();
-		for(String name : copyFrom.fields()) {
+		for(String name : copyFrom.thisFields()) {
 			FieldContext fieldContext = targetFieldMap.get(name);
 			if(fieldContext != null) {
-				Log.debug(CopyPair.class, "注解中的属性[" + name +  "]存在target[" + targetClazz.getClassName() + "]中");
+				Log.debug(CopyPair.class, "field [" + name +  "] exist in [" + targetClazz.getClassName() + "]");
 				if(fieldContext.isFinal()) {
-					Log.error(CopyPair.class, targetClazz.getClassName() + "注解中的属性[" + name +  "]是 final 类型");
-					throw new IllegalStateException(targetClazz.getClassName() + "注解中的属性[" + name +  "]是 final 类型");
+					Log.error(CopyPair.class, targetClazz.getClassName() + " field[" + name +  "]is final!");
+					throw new IllegalStateException(targetClazz.getClassName() + " field[" + name +  "]is final!");
 				}
 				if(fieldContext.isStatic()) {
-					Log.worn(CopyPair.class, targetClazz.getClassName() + "注解中的属性[" + name +  "]是 static 类型");
+					Log.worn(CopyPair.class, targetClazz.getClassName() + " field[" + name +  "]is static!");
 				}
 			}else {
-				Log.error(CopyPair.class, "注解中的属性[" + name +  "]不存在target[" + targetClazz.getClassName() + "]中");
+				Log.error(CopyPair.class, "field [" + name +  "] not exist in [" + targetClazz.getClassName() + "]");
 				return false;
 			}
 		}

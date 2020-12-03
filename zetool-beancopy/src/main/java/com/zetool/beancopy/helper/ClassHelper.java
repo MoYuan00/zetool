@@ -79,11 +79,17 @@ public class ClassHelper<T> {
 	 * @return
 	 */
 	public Map<String, FieldContext> getFieldContextsByCopyFrom(CopyFrom copyFrom) {
-		if(copyFrom.fields().length == 0) {// 默认拷贝所有属性
-			Log.info(ClassHelper.class, "默认映射所有属性");
-			return getFieldContexts();
+		Map<String, FieldContext> resultMap = null;
+		if(copyFrom.thisFields().length == 0) {// 默认拷贝所有属性
+			Log.info(ClassHelper.class, "default, mirror all field in " + clazz);
+			resultMap = getFieldContexts();
+		} else {
+			resultMap = new FieldContext.CopyFromFieldContextFilter(copyFrom).filter(getFieldContexts());
 		}
-		return new FieldContext.CopyFromFieldContextFilter(copyFrom).filter(getFieldContexts());
+		// 去除exceptFields中标注的字段
+		for(String fieldName : copyFrom.exceptThisFields())
+			resultMap.remove(fieldName);
+		return resultMap;
 	}
 	
 	/**

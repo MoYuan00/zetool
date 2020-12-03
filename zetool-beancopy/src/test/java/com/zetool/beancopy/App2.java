@@ -9,6 +9,7 @@ import com.zetool.beancopy.javabean.A;
 import com.zetool.beancopy.javabean.B;
 import com.zetool.beancopy.javabean.C;
 import com.zetool.beancopy.javabean.Default;
+import com.zetool.beancopy.javabean.Except;
 import com.zetool.beancopy.javabean.HumpToUnderLine;
 import com.zetool.beancopy.javabean.UnderLineToHump;
 import com.zetool.beancopy.util.Log;
@@ -22,13 +23,24 @@ public class App2 {
 //		checkTest();
 //		copyTest();
 		
-		checkMultCopy();
+//		checkMultCopy();
 		
-		multCopyTest();
+//		multCopyTest();
 		
-		underLineToHumpTest();
+//		underLineToHumpTest();
 		
-		HumpToUnderLineTest();
+//		HumpToUnderLineTest();
+		
+		exceptTest();
+	}
+	
+	/**
+	 * 测试 except 选项
+	 */
+	public static void exceptTest() {
+		Default a = new Default();
+		Except a2 = Copier.copy(a, Except.class);
+		Log.info(App2.class, "拷贝后的a2为:" + FieldContext.toString(a2));
 	}
 	
 	/**

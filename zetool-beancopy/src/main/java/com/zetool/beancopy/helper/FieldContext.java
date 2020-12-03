@@ -103,7 +103,7 @@ public abstract class FieldContext {
 		 */
 		@Override
 		public Collection<FieldContext> filter(Collection<FieldContext> fieldContexts) {
-			Set<String> fieldNameSet = CollectionUtils.toSet(copyFrom.fields());
+			Set<String> fieldNameSet = CollectionUtils.toSet(copyFrom.thisFields());
 			List<FieldContext> result = new ArrayList<FieldContext>();
 			for (FieldContext fieldContext : fieldContexts) 
 				if(fieldNameSet.contains(fieldContext.getName())) result.add(fieldContext);
@@ -115,7 +115,7 @@ public abstract class FieldContext {
 		 * @return
 		 */
 		public Map<String, FieldContext> filter(Map<String, FieldContext> fieldContexts) {
-			Set<String> fieldNameSet = CollectionUtils.toSet(copyFrom.fields());
+			Set<String> fieldNameSet = CollectionUtils.toSet(copyFrom.thisFields());
 			Map<String, FieldContext> result = new HashMap<String, FieldContext>();
 			for (String name : fieldContexts.keySet()) 
 				if(fieldNameSet.contains(name)) result.put(name, fieldContexts.get(name));
