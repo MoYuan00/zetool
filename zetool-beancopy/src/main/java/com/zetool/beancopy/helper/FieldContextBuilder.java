@@ -16,10 +16,10 @@ public class FieldContextBuilder {
 	 * @param clazz
 	 * @return
 	 */
-	public static Map<String, FieldContext> buildSimpleFieldContext(Class<?> clazz){
-		Map<String, FieldContext> fieldMap = new HashMap<>();
+	public static Map<String, FieldContent> buildSimpleFieldContext(Class<?> clazz){
+		Map<String, FieldContent> fieldMap = new HashMap<>();
 		for (Field field : clazz.getDeclaredFields()) 
-			fieldMap.put(field.getName(), new SimpleFieldContext(field));
+			fieldMap.put(field.getName(), new SimpleFieldContent(field));
 		return fieldMap;
 	}
 	
@@ -28,10 +28,10 @@ public class FieldContextBuilder {
 	 * @param clazz
 	 * @return
 	 */
-	public static Map<String, FieldContext> buildSimpleFieldContext(Object obj){
-		Map<String, FieldContext> fieldMap = new HashMap<>();
+	public static Map<String, FieldContent> buildSimpleFieldContext(Object obj){
+		Map<String, FieldContent> fieldMap = new HashMap<>();
 		for (Field field : obj.getClass().getDeclaredFields()) 
-			fieldMap.put(field.getName(), new SimpleFieldContext(field, obj));
+			fieldMap.put(field.getName(), new SimpleFieldContent(field, obj));
 		return fieldMap;
 	}
 }

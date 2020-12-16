@@ -22,7 +22,7 @@ public class ClassHelper<T> {
 	 */
 	private T obj;
 	
-	private Map<String, FieldContext> fieldContextMap;
+	private Map<String, FieldContent> fieldContextMap;
 	
 	public ClassHelper(Class<T> clazz) {
 		this.clazz = clazz;
@@ -30,8 +30,8 @@ public class ClassHelper<T> {
 	
 	@SuppressWarnings("unchecked")
 	public ClassHelper(T obj) {
-		this.obj = obj;
-		this.clazz = (Class<T>) obj.getClass();
+		this((Class<T>)obj.getClass());
+		bindObject(obj);
 	}
 	
 	public String getClassName() {
@@ -43,13 +43,16 @@ public class ClassHelper<T> {
 	}
 	
 	/**
-	 * 创建Object对象实例
+	 * 绑定到自己类的实例
 	 * @return
-	 * @throws InstantiationException 
+	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	public T newInstance() throws InstantiationException, IllegalAccessException {
-		return clazz.newInstance();
+	public ClassHelper<T> bindThisClassInstance() throws InstantiationException, IllegalAccessException{
+		if(this.obj == null) {
+			bindObject(clazz.newInstance());
+		}
+		return this;
 	}
 	
 	/**
@@ -64,7 +67,7 @@ public class ClassHelper<T> {
 	 * 获取所有字段的集合
 	 * @return
 	 */
-	public Map<String, FieldContext> getFieldContexts() {
+	public Map<String, FieldContent> getFieldContexts() {
 		if(fieldContextMap == null)
 			if(obj == null)
 				fieldContextMap =  FieldContextBuilder.buildSimpleFieldContext(clazz);
@@ -78,13 +81,13 @@ public class ClassHelper<T> {
 	 * @param copyFrom
 	 * @return
 	 */
-	public Map<String, FieldContext> getFieldContextsByCopyFrom(CopyFrom copyFrom) {
-		Map<String, FieldContext> resultMap = null;
+	public Map<String, FieldContent> getFieldContextsByCopyFrom(CopyFrom copyFrom) {
+		Map<String, FieldContent> resultMap = null;
 		if(copyFrom.thisFields().length == 0) {// 默认拷贝所有属性
 			Log.info(ClassHelper.class, "default, mirror all field in " + clazz);
 			resultMap = getFieldContexts();
 		} else {
-			resultMap = new FieldContext.CopyFromFieldContextFilter(copyFrom).filter(getFieldContexts());
+			resultMap = new FieldContent.CopyFromFieldContextFilter(copyFrom).filter(getFieldContexts());
 		}
 		// 去除exceptFields中标注的字段
 		for(String fieldName : copyFrom.exceptThisFields())
@@ -98,8 +101,9 @@ public class ClassHelper<T> {
 	 * @param obj
 	 */
 	public ClassHelper<T> bindObject(T obj) {
+		if(!obj.getClass().equals(clazz)) throw new IllegalArgumentException("the class type of obj not equals with clazz:" + obj.getClass());
 		if(obj != this.obj) {
-			for(FieldContext fieldContext : getFieldContexts().values()) 
+			for(FieldContent fieldContext : getFieldContexts().values())
 				fieldContext.setObject(obj);
 			this.obj = obj;
 		}

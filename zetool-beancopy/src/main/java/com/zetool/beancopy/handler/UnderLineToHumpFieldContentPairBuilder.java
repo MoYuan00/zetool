@@ -1,13 +1,12 @@
 package com.zetool.beancopy.handler;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import com.zetool.beancopy.checkor.CopyPair;
-import com.zetool.beancopy.checkor.FieldContextPair;
-import com.zetool.beancopy.helper.FieldContext;
+import com.zetool.beancopy.checkor.FieldContentPair;
+import com.zetool.beancopy.helper.FieldContent;
 
 /**
  * 支持驼峰命名法的 映射构建类
@@ -15,20 +14,20 @@ import com.zetool.beancopy.helper.FieldContext;
  * @author loki02
  * @date 2020年12月3日
  */
-public class UnderLineToHumpFieldContextPairBuilder implements FieldContextPairBuilder {
+public class UnderLineToHumpFieldContentPairBuilder implements FieldContentPairBuilder {
 
 	@Override
-	public <S, T> Collection<FieldContextPair> getFieldContexPairs(CopyPair<S, T> copyPair) {
-		Map<String, FieldContext> sourceFieldMap = copyPair.getSourceFieldMap();
-		Map<String, FieldContext> targetFieldMap = copyPair.getTargetFieldMap();
-		List<FieldContextPair> contextPairs = new ArrayList<FieldContextPair>();
+	public <S, T> List<FieldContentPair> getFieldContextPairs(CopyPair<S, T> copyPair) {
+		Map<String, FieldContent> sourceFieldMap = copyPair.getSourceFieldMap();
+		Map<String, FieldContent> targetFieldMap = copyPair.getTargetFieldMap();
+		List<FieldContentPair> contextPairs = new ArrayList<FieldContentPair>();
 		// targetField中的应该是下划线风格 
 		// sourceField中应该 是驼峰
 		for (String fieldName : targetFieldMap.keySet()) {
 			String humpName = getHumpStyleName(fieldName);// 驼峰风格
-			FieldContext sourceContext = sourceFieldMap.get(humpName);
+			FieldContent sourceContext = sourceFieldMap.get(humpName);
 			if(sourceContext != null) {
-				contextPairs.add(new FieldContextPair(sourceContext, targetFieldMap.get(fieldName)));
+				contextPairs.add(new FieldContentPair(sourceContext, targetFieldMap.get(fieldName)));
 			}else {
 				throw new IllegalStateException("下划线映射驼峰匹配失败！");// 表示映射出错
 			}

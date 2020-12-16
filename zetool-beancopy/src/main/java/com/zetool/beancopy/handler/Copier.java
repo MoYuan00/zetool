@@ -1,5 +1,9 @@
 package com.zetool.beancopy.handler;
 
+import com.zetool.beancopy.checkor.EqualsCopyPair;
+import com.zetool.beancopy.checkor.UnequalsCopyPair;
+import com.zetool.beancopy.helper.ClassHelper;
+
 import java.io.Serializable;
 
 /**
@@ -12,21 +16,16 @@ public class Copier {
 	
 	/**
 	 * 将Tsource对象克隆给Ttarget
-	 * @param <Tsource>
-	 * @param <Ttarget>
+	 * @param <S>
+	 * @param <T>
 	 * @param sourceObj
 	 * @param targetClass
 	 * @return
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	public static  <Tsource, Ttarget>Ttarget copy(Tsource sourceObj, Class<Ttarget> targetClass) {
-		try {
-			return UnequalsObjectCopyExecutor.copyFrom(sourceObj, targetClass);
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-			throw new IllegalStateException();
-		}
+	public static  <S, T>T copy(S sourceObj, Class<T> targetClass) {
+		return new UnequalsCopyPair<S, T>(new ClassHelper<S>(sourceObj), new ClassHelper<T>(targetClass)).cloneSourceToTarget(sourceObj);
 	}
 	
 	/**
@@ -38,12 +37,9 @@ public class Copier {
 	 * @throws IllegalAccessException
 	 */
 	public static <T>T copy(T sourceObj) {
-		try {
-			return EqualsObjecCopyExecutor.copyFrom(sourceObj);
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-			throw new IllegalStateException();
-		} 
+		return new EqualsCopyPair<T, T>(new ClassHelper<>(sourceObj), new ClassHelper<>(sourceObj))
+						.cloneSourceToTarget(sourceObj);
+
 	}
 	
 	/**

@@ -7,27 +7,27 @@ package com.zetool.beancopy.util;
  */
 public class StdLog extends Log {
 	
-	public void _any(Class<?> clazz, Object msg) {
+	protected void _any(Class<?> clazz, Object msg) {
 		System.out.println(format(ANY, clazz, msg));
 	}
-	
-	
-	public void _info(Class<?> clazz, Object msg) {
+
+
+	protected void _info(Class<?> clazz, Object msg) {
 		System.out.println(format(INFO, clazz, msg));
 	}
 
 
-	public void _debug(Class<?> clazz, Object msg) {
+	protected void _debug(Class<?> clazz, Object msg) {
 		System.out.println(format(DEBUG, clazz, msg));
 	}
-	
-	
-	public void _worn(Class<?> clazz, Object msg) {
+
+
+	protected void _worn(Class<?> clazz, Object msg) {
 		System.out.println(format(WORN, clazz, msg));
 	}
-	
-	
-	public void _error(Class<?> clazz, Object msg) {
+
+
+	protected void _error(Class<?> clazz, Object msg) {
 		System.err.println(format(ERROR, clazz, msg));
 	}
 }

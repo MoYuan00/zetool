@@ -6,10 +6,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Map;
-
-import com.zetool.beancopy.helper.FieldContext;
-import com.zetool.beancopy.helper.FieldContextBuilder;
 
 
 class EqualsObjecCopyExecutor {
@@ -57,31 +53,6 @@ class EqualsObjecCopyExecutor {
 			}
 		}
 		return bInstance;
-	}
-	
-	/**
-	 * 拷贝对象A和B同类型
-	 * @param <T>
-	 * @param a
-	 * @return 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T>T copyFrom(T sourceObj) throws InstantiationException, IllegalAccessException{
-		if(sourceObj == null) throw new NullPointerException("sourceObj is null");
-		Object targetObj = sourceObj.getClass().newInstance();
-		Map<String, FieldContext> targetMap = FieldContextBuilder.buildSimpleFieldContext(targetObj);
-		FieldContextBuilder.buildSimpleFieldContext(sourceObj.getClass()).forEach((name, sourceField) -> {
-			try {
-				sourceField.setObject(sourceObj);
-				Object value = sourceField.cloneValue(); // 拷贝值
-				targetMap.get(name).setValue(value);
-			} catch (IllegalArgumentException | SecurityException e) {
-				e.printStackTrace();
-			}
-		});
-		return (T)targetObj;
 	}
 
 }

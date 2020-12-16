@@ -13,17 +13,17 @@ import com.zetool.beancopy.util.Log;
  * @author Rnti
  *
  */
-public class SimpleFieldContext extends FieldContext {
+public class SimpleFieldContent extends FieldContent {
 	
 	private Field field;
 	private Object obj;
 	
-	public SimpleFieldContext(Field field) {
+	public SimpleFieldContent(Field field) {
 		this.field = field;
 		field.setAccessible(true);
 	}
 	
-	public SimpleFieldContext(Field field, Object obj) {
+	public SimpleFieldContent(Field field, Object obj) {
 		this(field);
 		this.obj = obj;
 	}
@@ -50,11 +50,11 @@ public class SimpleFieldContext extends FieldContext {
 	}
 
 	@Override
-	public SimpleFieldContext setValue(Object value) {
+	public SimpleFieldContent setValue(Object value) {
 		if(value == null) return this;
 		try {
 			
-			Log.debug(SimpleFieldContext.class, "setValue that value type is " + value.getClass().getTypeName());
+			Log.debug(SimpleFieldContent.class, "setValue that value type is " + value.getClass().getTypeName());
 			field.set(obj, value);
 			return this;
 		} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -66,9 +66,11 @@ public class SimpleFieldContext extends FieldContext {
 	@Override
 	public Object cloneValue() {
 		if(obj == null) throw new IllegalArgumentException("object is null, can not clone this value!");
+		Object value = getValue();
+		if(value == null) return null;
 		TypeToken<?> typeToken = TypeToken.get(field.getType());
-		Log.debug(SimpleFieldContext.class, "clone value type is " + typeToken.getType());
-		return new Gson().fromJson(new Gson().toJson(getValue()), typeToken.getType());
+		Log.debug(SimpleFieldContent.class, "clone value type is " + typeToken.getType());
+		return new Gson().fromJson(new Gson().toJson(value), typeToken.getType());
 	}
 
 	@Override
@@ -82,7 +84,7 @@ public class SimpleFieldContext extends FieldContext {
 	}
 
 	@Override
-	public SimpleFieldContext setObject(Object obj) {
+	public SimpleFieldContent setObject(Object obj) {
 		this.obj = obj;
 		return this;
 	}

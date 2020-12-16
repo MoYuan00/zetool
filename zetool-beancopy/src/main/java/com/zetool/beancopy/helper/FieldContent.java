@@ -17,7 +17,7 @@ import com.zetool.beancopy.util.CollectionUtils;
  * @author loki02
  * @date 2020年11月30日
  */
-public abstract class FieldContext {
+public abstract class FieldContent {
 	
 	/**
 	 * 将一个对象转换为字符串
@@ -58,7 +58,7 @@ public abstract class FieldContext {
 	 * 设置这个是哪个对象的字段，与对象绑定
 	 * @return
 	 */
-	public abstract FieldContext setObject(Object obj);
+	public abstract FieldContent setObject(Object obj);
 	
 	/**
 	 * 
@@ -70,7 +70,7 @@ public abstract class FieldContext {
 	 * 设置当前类的字段值
 	 * @return 当前类
 	 */
-	public abstract FieldContext setValue(Object value);
+	public abstract FieldContent setValue(Object value);
 	
 	/**
 	 * 拷贝当前字段的值并返回
@@ -84,7 +84,7 @@ public abstract class FieldContext {
 		 * @param fieldContexts
 		 * @return
 		 */
-		public Collection<FieldContext> filter(Collection<FieldContext> fieldContexts);
+		public Collection<FieldContent> filter(Collection<FieldContent> fieldContexts);
 	}
 
 	
@@ -102,10 +102,10 @@ public abstract class FieldContext {
 		 * @return
 		 */
 		@Override
-		public Collection<FieldContext> filter(Collection<FieldContext> fieldContexts) {
+		public Collection<FieldContent> filter(Collection<FieldContent> fieldContexts) {
 			Set<String> fieldNameSet = CollectionUtils.toSet(copyFrom.thisFields());
-			List<FieldContext> result = new ArrayList<FieldContext>();
-			for (FieldContext fieldContext : fieldContexts) 
+			List<FieldContent> result = new ArrayList<FieldContent>();
+			for (FieldContent fieldContext : fieldContexts)
 				if(fieldNameSet.contains(fieldContext.getName())) result.add(fieldContext);
 			return result;
 		}
@@ -114,9 +114,9 @@ public abstract class FieldContext {
 		 * @param fieldContexts
 		 * @return
 		 */
-		public Map<String, FieldContext> filter(Map<String, FieldContext> fieldContexts) {
+		public Map<String, FieldContent> filter(Map<String, FieldContent> fieldContexts) {
 			Set<String> fieldNameSet = CollectionUtils.toSet(copyFrom.thisFields());
-			Map<String, FieldContext> result = new HashMap<String, FieldContext>();
+			Map<String, FieldContent> result = new HashMap<String, FieldContent>();
 			for (String name : fieldContexts.keySet()) 
 				if(fieldNameSet.contains(name)) result.put(name, fieldContexts.get(name));
 			return result;
