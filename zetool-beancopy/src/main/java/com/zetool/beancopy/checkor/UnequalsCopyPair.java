@@ -6,9 +6,9 @@ import java.util.Map;
 
 import com.zetool.beancopy.annotation.CopyFrom;
 import com.zetool.beancopy.annotation.CopyFrom.MirrorType;
-import com.zetool.beancopy.handler.FieldContentPairBuilderFactory;
+import com.zetool.beancopy.handler.FieldPairBuilderFactory;
 import com.zetool.beancopy.helper.ClassHelper;
-import com.zetool.beancopy.helper.FieldContent;
+import com.zetool.beancopy.helper.FieldHelper;
 import com.zetool.beancopy.util.CollectionUtils;
 import com.zetool.beancopy.util.Log;
 
@@ -55,7 +55,7 @@ public final class UnequalsCopyPair<S, T> extends AbstractCopyPair<S, T>{
 	}
 
 	@Override
-	public Map<String, FieldContent> getTargetFieldMap(){
+	public Map<String, FieldHelper> getTargetFieldMap(){
 		return targetHelper.getFieldContextsByCopyFrom(copyFrom);
 	}
 
@@ -71,13 +71,13 @@ public final class UnequalsCopyPair<S, T> extends AbstractCopyPair<S, T>{
 		}
 		sourceHelper.bindObject(sourceObj);
 		// 获取映射集合, 并执行拷贝
-		this.getFieldContextPairList().forEach(FieldContentPair::cloneSourceToTarget);
+		this.getFieldContextPairList().forEach(FieldPair::cloneSourceToTarget);
 		return targetHelper.getBindObject();
 	}
 
 	@Override
-	public List<FieldContentPair> getFieldContextPairList() {
-		return FieldContentPairBuilderFactory.getBuilder(copyFrom.mirrorType()).getFieldContextPairs(this);
+	public List<FieldPair> getFieldContextPairList() {
+		return FieldPairBuilderFactory.getBuilder(copyFrom.mirrorType()).getFieldContextPairs(this);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public final class UnequalsCopyPair<S, T> extends AbstractCopyPair<S, T>{
 		if(sourceHelper.classIsNull() || targetHelper.classIsNull() || copyFrom == null) throw new NullPointerException();
 		if(!checkTargetFields()) return false;
 		Log.debug(UnequalsCopyPair.class, "check source:" + sourceHelper.getClassName() + " <- target" + targetHelper.getClassName());
-		Collection<FieldContentPair> fieldPairList = FieldContentPairBuilderFactory.getBuilder(getMirrorType()).getFieldContextPairs(this);
+		Collection<FieldPair> fieldPairList = FieldPairBuilderFactory.getBuilder(getMirrorType()).getFieldContextPairs(this);
 		if(!checkTypeIsEquals(fieldPairList)) return false;
 		return true;
 	}
@@ -98,8 +98,8 @@ public final class UnequalsCopyPair<S, T> extends AbstractCopyPair<S, T>{
 	 * 判断source和target对应的类型是否相同
 	 * @return
 	 */
-	private boolean checkTypeIsEquals(Collection<FieldContentPair> pairList) {
-		for(FieldContentPair pari : pairList) {
+	private boolean checkTypeIsEquals(Collection<FieldPair> pairList) {
+		for(FieldPair pari : pairList) {
 			if(pari.isMatch()) {
 				Log.debug(UnequalsCopyPair.class, "field type is compatible! " + pari.getTargetFC().getName() + " and " + pari.getSourceFC().getName());
 			} else {
@@ -118,9 +118,9 @@ public final class UnequalsCopyPair<S, T> extends AbstractCopyPair<S, T>{
 	 * @return
 	 */
 	private boolean checkTargetFields() {
-		Map<String, FieldContent> targetFieldMap = targetHelper.getFieldContexts();
+		Map<String, FieldHelper> targetFieldMap = targetHelper.getFieldContexts();
 		for(String name : copyFrom.thisFields()) {
-			FieldContent fieldContext = targetFieldMap.get(name);
+			FieldHelper fieldContext = targetFieldMap.get(name);
 			if(fieldContext != null) {
 				Log.debug(UnequalsCopyPair.class, "field [" + name +  "] exist in [" + targetHelper.getClassName() + "]");
 				if(fieldContext.isFinal()) {

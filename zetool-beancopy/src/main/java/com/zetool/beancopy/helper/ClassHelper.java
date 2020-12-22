@@ -22,7 +22,7 @@ public class ClassHelper<T> {
 	 */
 	private T obj;
 	
-	private Map<String, FieldContent> fieldContextMap;
+	private Map<String, FieldHelper> fieldContextMap;
 	
 	public ClassHelper(Class<T> clazz) {
 		this.clazz = clazz;
@@ -67,12 +67,12 @@ public class ClassHelper<T> {
 	 * 获取所有字段的集合
 	 * @return
 	 */
-	public Map<String, FieldContent> getFieldContexts() {
+	public Map<String, FieldHelper> getFieldContexts() {
 		if(fieldContextMap == null)
 			if(obj == null)
-				fieldContextMap =  FieldContextBuilder.buildSimpleFieldContext(clazz);
+				fieldContextMap =  FieldHelperBuilder.buildSimpleFieldContext(clazz);
 			else
-				fieldContextMap =  FieldContextBuilder.buildSimpleFieldContext(obj);
+				fieldContextMap =  FieldHelperBuilder.buildSimpleFieldContext(obj);
 		return fieldContextMap;
 	}
 	
@@ -81,13 +81,13 @@ public class ClassHelper<T> {
 	 * @param copyFrom
 	 * @return
 	 */
-	public Map<String, FieldContent> getFieldContextsByCopyFrom(CopyFrom copyFrom) {
-		Map<String, FieldContent> resultMap = null;
+	public Map<String, FieldHelper> getFieldContextsByCopyFrom(CopyFrom copyFrom) {
+		Map<String, FieldHelper> resultMap = null;
 		if(copyFrom.thisFields().length == 0) {// 默认拷贝所有属性
 			Log.info(ClassHelper.class, "default, mirror all field in " + clazz);
 			resultMap = getFieldContexts();
 		} else {
-			resultMap = new FieldContent.CopyFromFieldContextFilter(copyFrom).filter(getFieldContexts());
+			resultMap = new FieldHelper.CopyFromFieldContextFilter(copyFrom).filter(getFieldContexts());
 		}
 		// 去除exceptFields中标注的字段
 		for(String fieldName : copyFrom.exceptThisFields())
@@ -103,7 +103,7 @@ public class ClassHelper<T> {
 	public ClassHelper<T> bindObject(T obj) {
 		if(!obj.getClass().equals(clazz)) throw new IllegalArgumentException("the class type of obj not equals with clazz:" + obj.getClass());
 		if(obj != this.obj) {
-			for(FieldContent fieldContext : getFieldContexts().values())
+			for(FieldHelper fieldContext : getFieldContexts().values())
 				fieldContext.setObject(obj);
 			this.obj = obj;
 		}

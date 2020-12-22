@@ -1,6 +1,6 @@
 package com.zetool.beancopy.checkor;
 
-import com.zetool.beancopy.helper.FieldContent;
+import com.zetool.beancopy.helper.FieldHelper;
 
 import java.util.List;
 import java.util.Map;
@@ -22,19 +22,19 @@ public interface CopyPair<S, T>{
 	 * 获取源 可拷贝字段集合
 	 * @return
 	 */
-	public Map<String, FieldContent> getSourceFieldMap();
+	public Map<String, FieldHelper> getSourceFieldMap();
 
 	/**
 	 * 获取目标 需要拷贝的字段集合
 	 * @return
 	 */
-	public Map<String, FieldContent> getTargetFieldMap();
+	public Map<String, FieldHelper> getTargetFieldMap();
 
 	/**
 	 * 获取字段映射集合
 	 * @return
 	 */
-	public List<FieldContentPair> getFieldContextPairList();
+	public List<FieldPair> getFieldContextPairList();
 	
 	/**
 	 * 检查source 和 target 是否可以相互拷贝

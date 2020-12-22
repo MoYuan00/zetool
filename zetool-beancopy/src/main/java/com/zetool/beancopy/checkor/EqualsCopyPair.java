@@ -25,7 +25,7 @@ public final class EqualsCopyPair<S, T> extends AbstractCopyPair<S, T> {
             e.printStackTrace();
             throw new IllegalStateException("can not create a new instance by default constructor!");
         }
-        getFieldContextPairList().forEach(FieldContentPair::cloneSourceToTarget);
+        getFieldContextPairList().forEach(FieldPair::cloneSourceToTarget);
         return targetHelper.getBindObject();
     }
 
