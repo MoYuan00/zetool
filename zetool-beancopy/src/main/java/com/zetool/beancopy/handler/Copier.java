@@ -4,8 +4,6 @@ import com.zetool.beancopy.checkor.EqualsCopyPair;
 import com.zetool.beancopy.checkor.UnequalsCopyPair;
 import com.zetool.beancopy.helper.ClassHelper;
 
-import java.io.Serializable;
-
 /**
  * 拷贝对象工具类 的客服类（外观类，对外提供的接口）
  * 主要存放将a拷贝到b的方法
@@ -40,17 +38,5 @@ public class Copier {
 		return new EqualsCopyPair<T, T>(new ClassHelper<>(sourceObj), new ClassHelper<>(sourceObj))
 						.cloneSourceToTarget(sourceObj);
 
-	}
-	
-	/**
-	 * 克隆一份T对象
-	 * @param <T>
-	 * @param sourceObj
-	 * @return
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 */
-	public static <T extends Serializable>T copy(T sourceObj) {
-		return EqualsObjecCopyExecutor.copyFromWithIO(sourceObj);
 	}
 }

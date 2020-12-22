@@ -1,9 +1,9 @@
 package com.zetool.beancopy.checkor;
 
 import com.zetool.beancopy.annotation.CopyFrom;
-import com.zetool.beancopy.handler.FieldContentPairBuilderFactory;
+import com.zetool.beancopy.handler.FieldPairBuilderFactory;
 import com.zetool.beancopy.helper.ClassHelper;
-import com.zetool.beancopy.helper.FieldContent;
+import com.zetool.beancopy.helper.FieldHelper;
 
 import java.util.List;
 import java.util.Map;
@@ -26,17 +26,17 @@ public abstract class AbstractCopyPair<S, T> implements CopyPair<S, T> {
     protected ClassHelper<T> targetHelper;
 
     @Override
-    public Map<String, FieldContent> getSourceFieldMap() {
+    public Map<String, FieldHelper> getSourceFieldMap() {
         return sourceHelper.getFieldContexts();
     }
 
     @Override
-    public Map<String, FieldContent> getTargetFieldMap(){
+    public Map<String, FieldHelper> getTargetFieldMap(){
         return targetHelper.getFieldContexts();
     }
 
     @Override
-    public List<FieldContentPair> getFieldContextPairList() {
-        return (List<FieldContentPair>) FieldContentPairBuilderFactory.getBuilder(CopyFrom.MirrorType.DEFAULT).getFieldContextPairs(this);
+    public List<FieldPair> getFieldContextPairList() {
+        return FieldPairBuilderFactory.getBuilder(CopyFrom.MirrorType.DEFAULT).getFieldContextPairs(this);
     }
 }

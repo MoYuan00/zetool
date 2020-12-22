@@ -13,17 +13,17 @@ import com.zetool.beancopy.util.Log;
  * @author Rnti
  *
  */
-public class SimpleFieldContent extends FieldContent {
+public class SimpleFieldHelper extends FieldHelper {
 	
-	private Field field;
+	protected Field field;
 	private Object obj;
 	
-	public SimpleFieldContent(Field field) {
+	public SimpleFieldHelper(Field field) {
 		this.field = field;
 		field.setAccessible(true);
 	}
 	
-	public SimpleFieldContent(Field field, Object obj) {
+	public SimpleFieldHelper(Field field, Object obj) {
 		this(field);
 		this.obj = obj;
 	}
@@ -50,11 +50,11 @@ public class SimpleFieldContent extends FieldContent {
 	}
 
 	@Override
-	public SimpleFieldContent setValue(Object value) {
+	public SimpleFieldHelper setValue(Object value) {
 		if(value == null) return this;
 		try {
 			
-			Log.debug(SimpleFieldContent.class, "setValue that value type is " + value.getClass().getTypeName());
+			Log.debug(SimpleFieldHelper.class, "setValue that value type is " + value.getClass().getTypeName());
 			field.set(obj, value);
 			return this;
 		} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -69,7 +69,7 @@ public class SimpleFieldContent extends FieldContent {
 		Object value = getValue();
 		if(value == null) return null;
 		TypeToken<?> typeToken = TypeToken.get(field.getType());
-		Log.debug(SimpleFieldContent.class, "clone value type is " + typeToken.getType());
+		Log.debug(SimpleFieldHelper.class, "clone value type is " + typeToken.getType());
 		return new Gson().fromJson(new Gson().toJson(value), typeToken.getType());
 	}
 
@@ -84,7 +84,7 @@ public class SimpleFieldContent extends FieldContent {
 	}
 
 	@Override
-	public SimpleFieldContent setObject(Object obj) {
+	public SimpleFieldHelper setObject(Object obj) {
 		this.obj = obj;
 		return this;
 	}

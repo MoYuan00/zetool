@@ -1,24 +1,24 @@
 package com.zetool.beancopy.checkor;
 
-import com.zetool.beancopy.helper.FieldContent;
+import com.zetool.beancopy.helper.FieldHelper;
 
 /**
  * 一对属性映射关系
  * @author loki02
  * @date 2020年12月2日
  */
-public class FieldContentPair {
-	private final FieldContent sourceFC;
-	private final FieldContent targetFC;
-	public FieldContentPair(FieldContent sourceFC, FieldContent targetFC) {
+public class FieldPair {
+	private final FieldHelper sourceFC;
+	private final FieldHelper targetFC;
+	public FieldPair(FieldHelper sourceFC, FieldHelper targetFC) {
 		super();
 		this.sourceFC = sourceFC;
 		this.targetFC = targetFC;
 	}
-	public FieldContent getSourceFC() {
+	public FieldHelper getSourceFC() {
 		return sourceFC;
 	}
-	public FieldContent getTargetFC() {
+	public FieldHelper getTargetFC() {
 		return targetFC;
 	}
 	/**

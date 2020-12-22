@@ -1,12 +1,8 @@
 package com.zetool.beancopy.helper;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.Field;
+import java.util.*;
 
 import com.google.gson.Gson;
 import com.zetool.beancopy.annotation.CopyFrom;
@@ -17,7 +13,7 @@ import com.zetool.beancopy.util.CollectionUtils;
  * @author loki02
  * @date 2020年11月30日
  */
-public abstract class FieldContent {
+public abstract class FieldHelper {
 	
 	/**
 	 * 将一个对象转换为字符串
@@ -29,6 +25,20 @@ public abstract class FieldContent {
 			return new Gson().toJson(obj);
 		}
 		return "null";
+	}
+
+	/**
+	 * 获取一个类定义的所有字段，包括父类含义的字段
+	 * @param clazz
+	 * @return 字段集合
+	 */
+	public static Set<Field> getAllField(Class<?> clazz){
+		Set<Field> fieldSet = new HashSet<>(17);
+		while(clazz != null){
+			Collections.addAll(fieldSet, clazz.getDeclaredFields());
+			clazz = clazz.getSuperclass();
+		}
+		return fieldSet;
 	}
 	
 	/**
@@ -58,7 +68,7 @@ public abstract class FieldContent {
 	 * 设置这个是哪个对象的字段，与对象绑定
 	 * @return
 	 */
-	public abstract FieldContent setObject(Object obj);
+	public abstract FieldHelper setObject(Object obj);
 	
 	/**
 	 * 
@@ -70,7 +80,7 @@ public abstract class FieldContent {
 	 * 设置当前类的字段值
 	 * @return 当前类
 	 */
-	public abstract FieldContent setValue(Object value);
+	public abstract FieldHelper setValue(Object value);
 	
 	/**
 	 * 拷贝当前字段的值并返回
@@ -84,7 +94,7 @@ public abstract class FieldContent {
 		 * @param fieldContexts
 		 * @return
 		 */
-		public Collection<FieldContent> filter(Collection<FieldContent> fieldContexts);
+		public Collection<FieldHelper> filter(Collection<FieldHelper> fieldContexts);
 	}
 
 	
@@ -102,10 +112,10 @@ public abstract class FieldContent {
 		 * @return
 		 */
 		@Override
-		public Collection<FieldContent> filter(Collection<FieldContent> fieldContexts) {
+		public Collection<FieldHelper> filter(Collection<FieldHelper> fieldContexts) {
 			Set<String> fieldNameSet = CollectionUtils.toSet(copyFrom.thisFields());
-			List<FieldContent> result = new ArrayList<FieldContent>();
-			for (FieldContent fieldContext : fieldContexts)
+			List<FieldHelper> result = new ArrayList<FieldHelper>();
+			for (FieldHelper fieldContext : fieldContexts)
 				if(fieldNameSet.contains(fieldContext.getName())) result.add(fieldContext);
 			return result;
 		}
@@ -114,9 +124,9 @@ public abstract class FieldContent {
 		 * @param fieldContexts
 		 * @return
 		 */
-		public Map<String, FieldContent> filter(Map<String, FieldContent> fieldContexts) {
+		public Map<String, FieldHelper> filter(Map<String, FieldHelper> fieldContexts) {
 			Set<String> fieldNameSet = CollectionUtils.toSet(copyFrom.thisFields());
-			Map<String, FieldContent> result = new HashMap<String, FieldContent>();
+			Map<String, FieldHelper> result = new HashMap<String, FieldHelper>();
 			for (String name : fieldContexts.keySet()) 
 				if(fieldNameSet.contains(name)) result.put(name, fieldContexts.get(name));
 			return result;
