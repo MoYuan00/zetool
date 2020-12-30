@@ -1,33 +1,29 @@
-package com.zetool.beancopy.handler;
+package com.zetool.beancopy.cloner;
 
+import com.zetool.beancopy.helper.ClassHelper;
 import com.zetool.beancopy.helper.FieldHelper;
 import com.zetool.beancopy.util.Log;
+
+import java.lang.reflect.Modifier;
 
 /**
  * 对象拷贝器
  * 这个拷贝器的实现必定最为复杂 和 需要保证性能，安全等。
  */
-public class ObjectTypeCloner implements TypeCloner {
+public class ObjectTypeCloner extends TypeCloner {
 
+    public ObjectTypeCloner(){}
 
-    private int deepMax;
-
-    public ObjectTypeCloner(int deepMax){
-        this.deepMax = deepMax;
-    }
+    public ObjectTypeCloner(int deepMax){super(deepMax);}
 
     @Override
     public <T> T cloneValue(T t) {
+        if(t == null) return null;
         Log.debug(ObjectTypeCloner.class, "deep max value is " + deepMax);
         if(deepMax <= 0) return t;
-        try {
-            T resultObject = (T) t.getClass().newInstance();
-            cloneFieldsValue(t, resultObject);
-            return resultObject;
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return t;
+        T resultObject = (T) ClassHelper.newInstanceNoParameter (t.getClass());
+        cloneFieldsValue(t, resultObject);
+        return resultObject;
     }
 
     /**
@@ -37,8 +33,9 @@ public class ObjectTypeCloner implements TypeCloner {
      * @param <T>
      */
     private <T> void cloneFieldsValue(T sourceObj, T targetObj){
-        FieldHelper.getAllField(sourceObj.getClass())
+        ClassHelper.getAllField(sourceObj.getClass())
             .forEach(field -> {
+                if(Modifier.isFinal(field.getModifiers())) return;// 过滤掉modifier对象
                 try {
                     field.setAccessible(true);
                     Object value = field.get(sourceObj);
@@ -53,7 +50,7 @@ public class ObjectTypeCloner implements TypeCloner {
     }
 
     public static class Test{
-        public static class DataFather{
+         public static class DataFather{
             public DataFather(){}
             public DataFather(String name) {
                 this.name = name;

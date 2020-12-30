@@ -19,12 +19,7 @@ public final class EqualsCopyPair<S, T> extends AbstractCopyPair<S, T> {
     @Override
     public T cloneSourceToTarget(S sourceObj) {
         sourceHelper.bindObject(sourceObj);
-        try {
-            targetHelper.bindThisClassInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-            throw new IllegalStateException("can not create a new instance by default constructor!");
-        }
+        targetHelper.bindThisClassInstance();
         getFieldContextPairList().forEach(FieldPair::cloneSourceToTarget);
         return targetHelper.getBindObject();
     }

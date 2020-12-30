@@ -1,4 +1,4 @@
-package com.zetool.beancopy.handler;
+package com.zetool.beancopy.cloner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -6,10 +6,11 @@ import java.lang.reflect.Method;
 /**
  * 如果是实现了Cloneable接口的类，就调用它的clone方法
  */
-public class CloneableTypeCloner implements TypeCloner{
+public class CloneableTypeCloner extends TypeCloner{
 
     @Override
     public <T> T cloneValue(T t) {
+        if(t == null) return null;
         Method cloneMethod = null;
         try {
             //先获取自己定义的clone方法

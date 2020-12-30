@@ -1,8 +1,8 @@
-package com.zetool.beancopy.handler;
+package com.zetool.beancopy.cloner;
 
 import java.io.*;
 
-public class SerializableTypeCloner implements TypeCloner {
+public class SerializableTypeCloner extends TypeCloner {
 
     @Override
     public <T> T cloneValue(T t) {

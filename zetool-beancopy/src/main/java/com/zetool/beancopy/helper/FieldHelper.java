@@ -28,20 +28,6 @@ public abstract class FieldHelper {
 	}
 
 	/**
-	 * 获取一个类定义的所有字段，包括父类含义的字段
-	 * @param clazz
-	 * @return 字段集合
-	 */
-	public static Set<Field> getAllField(Class<?> clazz){
-		Set<Field> fieldSet = new HashSet<>(17);
-		while(clazz != null){
-			Collections.addAll(fieldSet, clazz.getDeclaredFields());
-			clazz = clazz.getSuperclass();
-		}
-		return fieldSet;
-	}
-	
-	/**
 	 * 
 	 * @return 返回字段名
 	 */

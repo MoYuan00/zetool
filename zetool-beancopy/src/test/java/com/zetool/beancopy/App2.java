@@ -2,7 +2,7 @@ package com.zetool.beancopy;
 
 
 import com.zetool.beancopy.checkor.Checker;
-import com.zetool.beancopy.handler.Copier;
+import com.zetool.beancopy.cloner.Copier;
 import com.zetool.beancopy.handler.SimpleClassScanner;
 import com.zetool.beancopy.helper.FieldHelper;
 import com.zetool.beancopy.javabean.A;
@@ -96,6 +96,9 @@ public class App2 {
 	public static void simpleCopyTest(){
 		A a = new A();
 		A a2 = Copier.copy(a);
+		a.list.add("new");// 测试通过没有修改
+		a.multArray[1][1][1] = 333;// 修改a，测试是否会导致a2也修改。。。 测试通过没有修改，证明完全克隆
+		a.listArray[1].add(3333);// 测试通过没有修改
 		Log.info(App2.class, "拷贝后的A为:" + FieldHelper.toString(a2));
 	}
 	
@@ -113,6 +116,7 @@ public class App2 {
 	public static void copyTest() {
 		A a = new A();
 		B b = Copier.copy(a, B.class);
+		a.list.add("123");
 		Log.info(App2.class, "拷贝后的B为:" + FieldHelper.toString(b));
 	}
 	

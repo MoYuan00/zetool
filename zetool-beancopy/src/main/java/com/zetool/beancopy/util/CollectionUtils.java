@@ -124,7 +124,7 @@ public final class CollectionUtils {
 	 * @param array
 	 * @return
 	 */
-	public final static <T>List<T> toList(T array[]){
+	public final static <T>List<T> toList(T ...array){
 		if(array == null) return new ArrayList<>();
 		List<T> list = new ArrayList<>(array.length);
 		for(T t : array) 

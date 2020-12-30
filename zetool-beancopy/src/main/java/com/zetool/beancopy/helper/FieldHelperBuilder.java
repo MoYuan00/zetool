@@ -16,10 +16,10 @@ public class FieldHelperBuilder {
 	 * @param clazz
 	 * @return
 	 */
-	public static Map<String, FieldHelper> buildSimpleFieldContext(Class<?> clazz){
+	public static Map<String, FieldHelper> buildFieldHelper(Class<?> clazz){
 		Map<String, FieldHelper> fieldMap = new HashMap<>();
-		for (Field field : FieldHelper.getAllField(clazz))
-			fieldMap.put(field.getName(), new SimpleFieldHelper(field));
+		for (Field field : ClassHelper.getAllField(clazz))
+			fieldMap.put(field.getName(), new TypeCloneFieldHelper(field));
 		return fieldMap;
 	}
 	
@@ -28,10 +28,10 @@ public class FieldHelperBuilder {
 	 * @param obj
 	 * @return
 	 */
-	public static Map<String, FieldHelper> buildSimpleFieldContext(Object obj){
+	public static Map<String, FieldHelper> buildFieldHelper(Object obj){
 		Map<String, FieldHelper> fieldMap = new HashMap<>();
-		for (Field field : FieldHelper.getAllField(obj.getClass()))
-			fieldMap.put(field.getName(), new SimpleFieldHelper(field, obj));
+		for (Field field : ClassHelper.getAllField(obj.getClass()))
+			fieldMap.put(field.getName(), new TypeCloneFieldHelper(field, obj));
 		return fieldMap;
 	}
 

@@ -2,7 +2,11 @@ package com.zetool.beancopy.helper;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.zetool.beancopy.annotation.CopyFrom;
 import com.zetool.beancopy.util.Log;
@@ -33,7 +37,36 @@ public class ClassHelper<T> {
 		this((Class<T>)obj.getClass());
 		bindObject(obj);
 	}
-	
+
+	/**
+	 * 获取一个类定义的所有字段，包括父类含义的字段
+	 * @param clazz
+	 * @return 字段集合
+	 */
+	public static Set<Field> getAllField(Class<?> clazz){
+		Set<Field> fieldSet = new HashSet<>(17);
+		while(clazz != null){
+			Collections.addAll(fieldSet, clazz.getDeclaredFields());
+			clazz = clazz.getSuperclass();
+		}
+		return fieldSet;
+	}
+
+	/**
+	 * 创建新对象，通过无参数构造函数
+	 * @param type
+	 * @param <T>
+	 * @return
+	 */
+	public static <T> T newInstanceNoParameter(Class<T> type){
+		try {
+			return type.getDeclaredConstructor().newInstance(new Class[]{});
+		} catch (NoSuchMethodException | InvocationTargetException |IllegalAccessException | InstantiationException e) {
+			e.printStackTrace();
+		}
+		throw new IllegalStateException();
+	}
+
 	public String getClassName() {
 		return clazz.getName();
 	}
@@ -48,9 +81,9 @@ public class ClassHelper<T> {
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	public ClassHelper<T> bindThisClassInstance() throws InstantiationException, IllegalAccessException{
+	public ClassHelper<T> bindThisClassInstance() {
 		if(this.obj == null) {
-			bindObject(clazz.newInstance());
+			bindObject(ClassHelper.newInstanceNoParameter(clazz));
 		}
 		return this;
 	}
@@ -70,9 +103,9 @@ public class ClassHelper<T> {
 	public Map<String, FieldHelper> getFieldContexts() {
 		if(fieldContextMap == null)
 			if(obj == null)
-				fieldContextMap =  FieldHelperBuilder.buildSimpleFieldContext(clazz);
+				fieldContextMap =  FieldHelperBuilder.buildFieldHelper(clazz);
 			else
-				fieldContextMap =  FieldHelperBuilder.buildSimpleFieldContext(obj);
+				fieldContextMap =  FieldHelperBuilder.buildFieldHelper(obj);
 		return fieldContextMap;
 	}
 	

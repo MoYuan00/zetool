@@ -1,12 +1,13 @@
 package com.zetool.beancopy.helper;
 
-import com.zetool.beancopy.handler.TypeClonerFactory;
+import com.zetool.beancopy.cloner.TypeCloner;
+import com.zetool.beancopy.cloner.TypeClonerFactory;
 
 import java.lang.reflect.Field;
 
 /**
  * 内部使用TypeCloner拷贝字段值
- * @see com.zetool.beancopy.handler.TypeCloner
+ * @see TypeCloner
  * @see TypeClonerFactory
  */
 public class TypeCloneFieldHelper extends SimpleFieldHelper {

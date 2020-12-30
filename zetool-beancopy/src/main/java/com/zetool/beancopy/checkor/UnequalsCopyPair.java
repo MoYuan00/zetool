@@ -63,12 +63,7 @@ public final class UnequalsCopyPair<S, T> extends AbstractCopyPair<S, T>{
 	public T cloneSourceToTarget(S sourceObj) {
 		Log.debug(this.getClass(), "<outer class clone> from " + sourceObj.getClass().getName()
 				+ " to " + targetHelper.getClassName());
-		try {
-			targetHelper.bindThisClassInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-			throw new IllegalStateException("can not create a new instance by default constructor!");
-		}
+		targetHelper.bindThisClassInstance();
 		sourceHelper.bindObject(sourceObj);
 		// 获取映射集合, 并执行拷贝
 		this.getFieldContextPairList().forEach(FieldPair::cloneSourceToTarget);
