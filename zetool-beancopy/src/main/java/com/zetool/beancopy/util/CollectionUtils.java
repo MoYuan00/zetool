@@ -15,7 +15,7 @@ import java.util.function.Predicate;
  *
  */
 public final class CollectionUtils {
-	
+
 	/**
 	 * 找到第一个匹配的
 	 * 如果没有找到返回null
@@ -82,18 +82,20 @@ public final class CollectionUtils {
 	 * @param array
 	 * @return
 	 */
-	public final static <T>Set<T> toSet(T array[]){
+	public final static <T>Set<T> toSet(T... array){
 		if(array == null) return new HashSet<T>();
 		Set<T> list = new HashSet<>(array.length);
 		for(T t : array) list.add(t);
 		return list;
 	}
-	
-	
+
+
 	/**
 	 * 将一个数组Iterable<T> items转换成HashSet<R>. 如果Iterable<T> == null 返回空集合
-	 * @param <T, R>
-	 * @param array
+	 * @param items
+	 * @param call
+	 * @param <T>
+	 * @param <R>
 	 * @return
 	 */
 	public final static <T, R>Set<R> toSet(Iterable<T> items, Function<T, R> call){
@@ -102,12 +104,12 @@ public final class CollectionUtils {
 		for(T t : items) list.add(call.apply(t));
 		return list;
 	}
-	
-	
+
+
 	/**
 	 * 将一个数组Iterable<T> items转换成HashSet<T>. 如果Iterable<T> == null 返回空集合
+	 * @param items
 	 * @param <T>
-	 * @param array
 	 * @return
 	 */
 	public final static <T>Set<T> toSet(Iterable<T> items){
@@ -125,7 +127,7 @@ public final class CollectionUtils {
 	 * @return
 	 */
 	public final static <T>List<T> toList(T ...array){
-		if(array == null) return new ArrayList<>();
+		if(array == null) return new ArrayList<>(0);
 		List<T> list = new ArrayList<>(array.length);
 		for(T t : array) 
 			list.add(t);
