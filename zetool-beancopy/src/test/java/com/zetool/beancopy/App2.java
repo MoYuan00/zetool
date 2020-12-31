@@ -1,24 +1,20 @@
 package com.zetool.beancopy;
 
 
-import com.zetool.beancopy.checkor.Checker;
-import com.zetool.beancopy.cloner.Copier;
-import com.zetool.beancopy.handler.SimpleClassScanner;
-import com.zetool.beancopy.helper.FieldHelper;
-import com.zetool.beancopy.javabean.A;
-import com.zetool.beancopy.javabean.B;
-import com.zetool.beancopy.javabean.C;
-import com.zetool.beancopy.javabean.Default;
-import com.zetool.beancopy.javabean.Except;
-import com.zetool.beancopy.javabean.HumpToUnderLine;
-import com.zetool.beancopy.javabean.UnderLineToHump;
+import com.zetool.beancopy.field.checkor.Checker;
+import com.zetool.beancopy.field.cloner.Copier;
+import com.zetool.beancopy.io.FlexibleClassScanner;
+import com.zetool.beancopy.field.FieldHelper;
+import com.zetool.beancopy.javabean.*;
 import com.zetool.beancopy.util.Log;
+import com.zetool.beancopy.util.TimerInterval;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class App2 {
 	public static void main(String[] args) {
-//		Log.LEVEL = Log.WORN;
-//		Log.logger = new StdLog();
-
+//		Log.setLEVEL(Log.ERROR);
 		checkTest();
 
 		checkMultCopy();
@@ -27,16 +23,31 @@ public class App2 {
 		baseTypeCopyTest();
 
 		simpleCopyTest();
-		
+
 		copyTest();
 
 		multCopyTest();
-		
+
 		underLineToHumpTest();
-		
+
 		HumpToUnderLineTest();
-		
+
 		exceptTest();
+
+		speedTest();
+	}
+
+	public static void speedTest(){
+		int n = 100000;
+		TimerInterval timerInterval = new TimerInterval();
+		Speed speed = new Speed();
+		List<Speed> speeds = new LinkedList<>();
+		for (int i = 0; i < n; ++i) {
+			Speed temp = Copier.copy(speed);
+//			BeanUtils.copyProperties(speed, speed);
+//			speeds.add(new Speed());
+		}
+		Log.error(App2.class, "花费时间mm：" + (timerInterval.intervalMMTime()));
 	}
 	
 	/**
@@ -68,7 +79,7 @@ public class App2 {
 	
 	public static void checkTest() {
 		Checker.check(
-						new SimpleClassScanner().addClassesByClassName(A.class.getName())
+						new FlexibleClassScanner().addPackageClassesByClassName(A.class.getName())
 				);
 	}
 	
@@ -77,7 +88,7 @@ public class App2 {
 	 */
 	public static void checkMultCopy(){
 		Checker.check(
-						new SimpleClassScanner().addClassesByClassName(A.class.getName())
+						new FlexibleClassScanner().addPackageClassesByClassName(A.class.getName())
 				);
 	}
 
@@ -96,10 +107,10 @@ public class App2 {
 	public static void simpleCopyTest(){
 		A a = new A();
 		A a2 = Copier.copy(a);
-		a.list.add("new");// 测试通过没有修改
-		a.multArray[1][1][1] = 333;// 修改a，测试是否会导致a2也修改。。。 测试通过没有修改，证明完全克隆
-		a.listArray[1].add(3333);// 测试通过没有修改
-		Log.info(App2.class, "拷贝后的A为:" + FieldHelper.toString(a2));
+//		a.list.add("new");// 测试通过没有修改
+//		a.multArray[1][1][1] = 333;// 修改a，测试是否会导致a2也修改。。。 测试通过没有修改，证明完全克隆
+//		a.listArray[1].add(3333);// 测试通过没有修改
+//		Log.info(App2.class, "拷贝后的A为:" + FieldHelper.toString(a2));
 	}
 	
 	/**
