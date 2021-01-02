@@ -21,3 +21,4 @@
 **/**/*.md
 /**/src/*.md
 !README.md
+!test.md
