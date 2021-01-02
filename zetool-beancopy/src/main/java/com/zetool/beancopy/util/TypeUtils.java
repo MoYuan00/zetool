@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
  * 类型工具
  */
 public class TypeUtils {
+
     /**
      * 是否是基本类型的包装类型
      * @param clazz
@@ -15,8 +16,7 @@ public class TypeUtils {
         try {
             return ((Class<?>)clazz.getField("TYPE").get(null)).isPrimitive();
         } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
-            throw new IllegalStateException();
+            return false;
         }
     }
 

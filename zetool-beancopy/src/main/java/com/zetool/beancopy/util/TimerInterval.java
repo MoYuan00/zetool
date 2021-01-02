@@ -7,7 +7,11 @@ public class TimerInterval {
 
     private long startTime;
 
-    public TimerInterval(){
+    public static TimerInterval start(){
+        return new TimerInterval();
+    }
+
+    private TimerInterval(){
         this.startTime = System.nanoTime();
     }
 

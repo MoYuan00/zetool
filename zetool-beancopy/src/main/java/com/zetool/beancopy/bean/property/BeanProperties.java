@@ -1,26 +1,40 @@
 package com.zetool.beancopy.bean.property;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.beans.PropertyDescriptor;
 
-public class BeanProperties {
+public interface BeanProperties {
 
     /**
      *
-     * @return 需要拷贝的属性集合
+     * @return
      */
-    public static PropertyDescriptor[] getPrepareDescriptors(Class<?> clazz){
-        PropertyDescriptor[] pds = null;
-        try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
-            pds = beanInfo.getPropertyDescriptors();
-        } catch (IntrospectionException e) {
-            e.printStackTrace();
-        }
-        return pds;
-    }
+    public @Nonnull PropertyDescriptor[] getGetterPropertyDescriptors();
 
+    /**
+     *
+     * @return
+     */
+    public @Nonnull PropertyDescriptor[] getGetterAndSetterPropertyDescriptors();
 
+    /**
+     *
+     * @return
+     */
+    public @Nonnull
+    PropertyDescriptor[] getSetterPropertyDescriptors();
+
+    /**
+     *
+     * @return
+     */
+
+    public @Nullable PropertyDescriptor getGetterPropertyDescriptor(String propertyName);
+
+    /**
+     *
+     * @return
+     */
+    public @Nullable PropertyDescriptor getSetterPropertyDescriptor(String propertyName);
 }

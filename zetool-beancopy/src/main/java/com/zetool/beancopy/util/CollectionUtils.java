@@ -15,7 +15,7 @@ import java.util.function.Predicate;
  *
  */
 public final class CollectionUtils {
-	
+
 	/**
 	 * 找到第一个匹配的
 	 * 如果没有找到返回null
@@ -127,7 +127,7 @@ public final class CollectionUtils {
 	 * @return
 	 */
 	public final static <T>List<T> toList(T ...array){
-		if(array == null) return new ArrayList<>();
+		if(array == null) return new ArrayList<>(0);
 		List<T> list = new ArrayList<>(array.length);
 		for(T t : array) 
 			list.add(t);

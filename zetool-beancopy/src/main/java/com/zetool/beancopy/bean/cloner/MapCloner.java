@@ -1,15 +1,15 @@
 package com.zetool.beancopy.bean.cloner;
 
-import com.zetool.beancopy.util.TypeUtils;
-
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 public class MapCloner implements TypeCloner {
+
+    @Nonnull
     @Override
-    public <T> T cloneValue(T obj, int deepMax) {
-        if(obj == null) return null;
-        Map map = (Map)obj;
-        Map mapClone = (Map) TypeUtils.newInstanceNoParameter(obj.getClass());
+    public <T> T cloneValue(@Nonnull T sourceObj, @Nonnull T targetObj, int deepMax) {
+        Map map = (Map)sourceObj;
+        Map mapClone = (Map)targetObj;
         map.entrySet().forEach(entry -> {
             Map.Entry item = (Map.Entry)entry;// TODO 这里声明了太多变量，可以声明在外部提速
             Object key = item.getKey();

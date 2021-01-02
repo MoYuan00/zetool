@@ -28,7 +28,7 @@ public class TypeClonerFactory {
     }
 
     public static TypeCloner getCollectionCloner(){
-        return new CollectionCloner();
+        return collectionCloner;
     }
 
     public static TypeCloner getMapCloner(){

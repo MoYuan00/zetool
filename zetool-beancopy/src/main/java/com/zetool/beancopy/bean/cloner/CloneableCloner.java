@@ -1,22 +1,24 @@
 package com.zetool.beancopy.bean.cloner;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class CloneableCloner implements TypeCloner{
+
+    @Nonnull
     @Override
-    public <T> T cloneValue(T obj, int deepMax) {
-        if (obj == null) return null;
-        Method cloneMethod = null;
+    public <T> T cloneValue(@Nonnull T obj, int deepMax) {
+        Method cloneMethod;
         try {
             //先获取自己定义的clone方法
-            cloneMethod = obj.getClass().getDeclaredMethod("clone", new Class[] {});
+            cloneMethod = obj.getClass().getDeclaredMethod("clone");
         } catch (NoSuchMethodException e) {
             //如果自身未定义clone方法，则从父类中找，但父类的clone一定要是public
             try {
-                cloneMethod = obj.getClass().getMethod("clone", new Class[] {});
-            } catch (NoSuchMethodException noSuchMethodException) {
-                noSuchMethodException.printStackTrace();
+                cloneMethod = obj.getClass().getMethod("clone");
+            } catch (NoSuchMethodException e1) {
+                e1.printStackTrace();
                 throw new IllegalStateException();
             }
         }
@@ -29,5 +31,11 @@ public class CloneableCloner implements TypeCloner{
             throw new IllegalStateException();
         }
         return val;
+    }
+
+    @Nonnull
+    @Override
+    public <T> T cloneValue(@Nonnull T sourceObj, @Nonnull T targetObj, int deepMax) {
+        return cloneValue(sourceObj, deepMax);
     }
 }

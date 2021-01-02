@@ -1,5 +1,7 @@
 package com.zetool.beancopy.field.cloner;
 
+
+import com.zetool.beancopy.bean.cloner.TypeClonerAdapter;
 import com.zetool.beancopy.field.checkor.CopyPair;
 import com.zetool.beancopy.field.checkor.UnequalsCopyPair;
 import com.zetool.beancopy.field.ClassHelper;
@@ -37,6 +39,6 @@ public class Copier {
 	 * @throws IllegalAccessException
 	 */
 	public static <T>T copy(T sourceObj) {
-		return TypeClonerFactory.getTypeCloner(sourceObj.getClass()).cloneValue(sourceObj);
+		return TypeClonerAdapter.cloneValue(sourceObj.getClass(), sourceObj, 1);
 	}
 }

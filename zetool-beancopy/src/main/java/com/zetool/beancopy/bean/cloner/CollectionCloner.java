@@ -2,26 +2,22 @@ package com.zetool.beancopy.bean.cloner;
 
 import com.zetool.beancopy.util.TypeUtils;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**
  * 集合拷贝器
  */
 public class CollectionCloner implements TypeCloner {
-    /**
-     *
-     * @param obj 要克隆的对象
-     * @param deepMax 拷贝深度
-     * @param <T>
-     * @return
-     */
+
+    @Nonnull
     @Override
-    public <T> T cloneValue(T obj, int deepMax) {
-        Iterable<?> iterable = (Iterable<?>)obj;
-        Collection collection = (Collection) TypeUtils.newInstanceNoParameter(obj.getClass());// 实例化一个集合
+    public <T> T cloneValue(@Nonnull T sourceObj, @Nonnull T targetObj, int deepMax) {
+        Iterable<?> iterable = (Iterable<?>)sourceObj;
+        Collection collection = (Collection)targetObj;
         iterable.forEach(item -> {
             if(item == null) collection.add(null);
-            else collection.add(TypeClonerAdapter.cloneValue(item.getClass(), item, deepMax - 1));
+            else collection.add(TypeClonerAdapter.cloneValue(item, deepMax - 1));
         });// 循环拷贝集合
         return (T) collection;
     }

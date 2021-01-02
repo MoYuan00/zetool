@@ -1,7 +1,11 @@
 package com.zetool.beancopy.bean.cloner;
 
-import com.zetool.beancopy.util.TypeUtils;
 
+import com.zetool.beancopy.bean.BeanCloner;
+import com.zetool.beancopy.bean.property.CachedBeanHelper;
+
+import javax.annotation.Nonnull;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -9,23 +13,13 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ObjectCloner implements TypeCloner {
 
+    @Nonnull
     @Override
-    public <T> T cloneValue(T obj, int deepMax) {
-        T newObj = (T) TypeUtils.newInstanceNoParameter(obj.getClass());// 用无参数构造，实例化一个对象
-        new BeanHelper(obj.getClass()).getPropertyDescriptors().forEach(dp -> {// 拷贝所有参数
-            try {
-                Object value = dp.getReadMethod().invoke(obj);
-                if(value == null) {
-                    dp.getWriteMethod().invoke(obj, null);
-                    return;
-                }
-                Object cloneValue =  TypeClonerAdapter.cloneValue(value.getClass(), value, deepMax - 1);
-                dp.getWriteMethod().invoke(obj, cloneValue);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
-        return newObj;
+    public <T> T cloneValue(@Nonnull T sourceObj, @Nonnull T targetObj, int deepMax) {
+        for(PropertyDescriptor pd : CachedBeanHelper.forClass(sourceObj.getClass()).getGetterAndSetterPropertyDescriptors()){// 拷贝所有参数
+            BeanCloner.cloneProperty(pd, pd, sourceObj, targetObj, deepMax);
+        }
+        return targetObj;
     }
 
 }

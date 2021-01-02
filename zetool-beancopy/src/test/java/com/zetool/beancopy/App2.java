@@ -1,6 +1,7 @@
 package com.zetool.beancopy;
 
 
+import com.zetool.beancopy.bean.BeanCloner;
 import com.zetool.beancopy.field.checkor.Checker;
 import com.zetool.beancopy.field.cloner.Copier;
 import com.zetool.beancopy.io.FlexibleClassScanner;
@@ -8,6 +9,7 @@ import com.zetool.beancopy.field.FieldHelper;
 import com.zetool.beancopy.javabean.*;
 import com.zetool.beancopy.util.Log;
 import com.zetool.beancopy.util.TimerInterval;
+import org.springframework.beans.BeanUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,37 +17,38 @@ import java.util.List;
 public class App2 {
 	public static void main(String[] args) {
 //		Log.setLEVEL(Log.ERROR);
-		checkTest();
 
-		checkMultCopy();
-
-
-		baseTypeCopyTest();
-
-		simpleCopyTest();
-
-		copyTest();
-
-		multCopyTest();
-
-		underLineToHumpTest();
-
-		HumpToUnderLineTest();
-
-		exceptTest();
+//		checkTest();
+//
+//		checkMultCopy();
+//
+//
+//		baseTypeCopyTest();
+//
+//		simpleCopyTest();
+//
+//		copyTest();
+//
+//		multCopyTest();
+//
+//		underLineToHumpTest();
+//
+//		HumpToUnderLineTest();
+//
+//		exceptTest();
 
 		speedTest();
 	}
 
 	public static void speedTest(){
-		int n = 100000;
-		TimerInterval timerInterval = new TimerInterval();
+		int n = 1000000;
 		Speed speed = new Speed();
 		List<Speed> speeds = new LinkedList<>();
+		TimerInterval timerInterval = TimerInterval.start();
 		for (int i = 0; i < n; ++i) {
-			Speed temp = Copier.copy(speed);
-//			BeanUtils.copyProperties(speed, speed);
-//			speeds.add(new Speed());
+//			Speed temp = Copier.copy(speed);
+			BeanUtils.copyProperties(speed, speed);
+//			BeanCloner.cloneSurfaceProperties(speed, speed);
 		}
 		Log.error(App2.class, "花费时间mm：" + (timerInterval.intervalMMTime()));
 	}

@@ -5,9 +5,14 @@
 你只需要简单的这样的代码：
 ```java
 A a = new A();
-A a2 = Copier.copy(a); // clone new instance
-Log.info(App2.class, "拷贝后的A为:" + FieldContext.toString(a2));
+A a2 = BeanCloner.cloneSurfaceProperties(a); // 浅拷贝一个对象a
+// 或者通过如下方式指定拷贝层数，
+A a2 = BeanCloner.cloneProperties(a, 3); // 拷贝一个对象a，拷贝层数为3。
 ```
+> 注：如果指定拷贝层数小于等于0那么，会直接返回引用，
+> 如果拷贝层数为1，最多将会拷贝所有属性的引用
+> 如果拷贝层数为2，最多将会拷贝所有属性，（如果属性为对象）的属性的引用。
+> 依次类推
 # 跨类的拷贝class A copy to new class B
 对于不同类型间的 拷贝支持
 设有如下类：(为了方便直接初始化了值)
