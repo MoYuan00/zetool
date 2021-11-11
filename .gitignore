@@ -20,5 +20,5 @@
 # 无用的 md文件
 **/**/*.md
 /**/src/*.md
-!README.md
+!beans/README.md
 !test.md
